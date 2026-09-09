@@ -650,137 +650,174 @@ function copyRoom(){navigator.clipboard?.writeText(room);toast('Código copiado:
 function openShare(){if(role!=='master'){toast('Somente o Mestre pode compartilhar a tela');return}$('shareModal').style.display='flex';$('shareActive').style.display=screenStream?'block':'none'}
 function closeShare(){$('shareModal').style.display='none'}
 async function shareScreen(type){
-  let chosenStream = null;
-  try{
-    if(role!=='master'){
-      toast('Somente o Mestre pode compartilhar a tela');
-      return;
-    }
+  if(role!=='master') return;
 
-    if(screenStream) stopShare();
+  // getDisplayMedia exige contexto seguro (HTTPS/localhost) na maioria dos navegadores.
+  // Também precisa ser chamado diretamente a partir de uma ação do usuário.
+  if(!navigator.mediaDevices || typeof navigator.mediaDevices.getDisplayMedia!=='function'){
+    toast('⚠️ Compartilhamento de tela indisponível. Abra esta página em HTTPS ou http://localhost.');
+    console.error('getDisplayMedia indisponível:', {
+      protocol: location.protocol,
+      secureContext: window.isSecureContext,
+      mediaDevices: !!navigator.mediaDevices
+    });
+    return;
+  }
 
-    shareSession++;
-    const currentShareSession=shareSession;
-    const cursor=document.getElementById('cursorMode')?.value||'always';
-    const audioEnabled=document.getElementById('shareAudioEnabled')?.checked!==false;
+  if(!window.isSecureContext && location.hostname!=='localhost' && location.hostname!=='127.0.0.1'){
+    toast('🔒 O navegador bloqueou: abra o site em HTTPS ou localhost.');
+    console.warn('Contexto inseguro para getDisplayMedia:', location.href);
+    return;
+  }
 
-    // getDisplayMedia must be called directly from the user's click.
-    // Keep the first request conservative for maximum Chrome/Edge compatibility.
-    const baseVideo = {
-      cursor: cursor==='never' ? 'never' : cursor==='motion' ? 'motion' : 'always',
-      frameRate: { ideal: 30, max: 60 },
-      width: { ideal: 1920 },
-      height: { ideal: 1080 }
-    };
+  stopShare();
+  shareSession++;
 
-    const requests = [
-      {
-        video: baseVideo,
+  const cursor = document.getElementById('cursorMode')?.value || 'always';
+  const audioEnabled = !!document.getElementById('shareAudio')?.checked;
+
+  const video = {
+    cursor: cursor==='never' ? 'never' : cursor==='motion' ? 'motion' : 'always',
+    frameRate: { ideal: 30, max: 60 },
+    width: { ideal: 1920 },
+    height: { ideal: 1080 }
+  };
+
+  let stream = null;
+  let audioFallback = false;
+
+  try {
+    // 1) Tenta áudio + vídeo.
+    try {
+      stream = await navigator.mediaDevices.getDisplayMedia({
+        video,
         audio: audioEnabled
-      },
-      {
-        video: baseVideo,
-        audio: false
+      });
+    } catch(e){
+      console.warn('Primeira tentativa de compartilhamento falhou:', e);
+
+      // Cancelamento/bloqueio deliberado não deve abrir uma segunda janela.
+      if(e?.name==='NotAllowedError' || e?.name==='AbortError'){
+        throw e;
       }
-    ];
 
-    let lastError = null;
-
-    for(let i=0;i<requests.length;i++){
-      try{
-        chosenStream = await navigator.mediaDevices.getDisplayMedia(requests[i]);
-        break;
-      }catch(e){
-        lastError = e;
-
-        // User explicitly cancelled the browser picker.
-        if(e?.name==='NotAllowedError' || e?.name==='AbortError'){
-          throw e;
-        }
-
-        // If audio caused the failure, retry once without audio.
-        if(i===0) continue;
+      // 2) Se o navegador rejeitar a captura de áudio, tenta somente vídeo.
+      if(audioEnabled){
+        audioFallback = true;
+        stream = await navigator.mediaDevices.getDisplayMedia({
+          video,
+          audio: false
+        });
+      } else {
         throw e;
       }
     }
 
-    if(!chosenStream) throw lastError || new Error('Nenhuma fonte de compartilhamento foi selecionada.');
+    if(!stream || !stream.getVideoTracks().length){
+      throw new Error('Nenhuma imagem da tela foi capturada.');
+    }
 
-    screenStream=chosenStream;
+    screenStream = stream;
     closeShare();
     renderLocalShare();
-    $('shareActive').style.display='block';
+    document.getElementById('shareActive')?.classList.remove('hidden');
 
-    const hasAudio=screenStream.getAudioTracks().length>0;
-    $('status').textContent=hasAudio
-      ? 'Transmitindo vídeo + 🔊 áudio da fonte'
-      : 'Transmitindo vídeo';
+    const videoTrack = stream.getVideoTracks()[0];
+    const audioTracks = stream.getAudioTracks();
 
-    const v=screenStream.getVideoTracks()[0];
-    try{ v.contentHint='motion'; }catch(e){}
+    try{
+      if('contentHint' in videoTrack) videoTrack.contentHint = 'motion';
+    }catch(_){}
 
-    // If the user stops sharing from the browser's own UI, clean everything up.
-    v?.addEventListener('ended', stopShare, {once:true});
+    // O usuário pode parar pelo botão do próprio navegador.
+    videoTrack.addEventListener('ended', ()=>{
+      if(screenStream === stream) stopShare();
+    }, { once:true });
+
+    if(audioTracks.length){
+      try{
+        audioTracks.forEach(t => t.contentHint = 'music');
+      }catch(_){}
+      setStatus('🖥️ Compartilhando tela • áudio ativo');
+    }else if(audioEnabled || audioFallback){
+      setStatus('🖥️ Compartilhando tela • sem áudio (navegador/fonte não disponibilizou)');
+    }else{
+      setStatus('🖥️ Compartilhando tela');
+    }
+
+    // Envia a transmissão para todos os participantes conectados.
+    screenCalls.forEach(call=>{
+      try{ call.close(); }catch(_){}
+    });
+    screenCalls.clear();
 
     connections.forEach(c=>{
-      if(!c.open) return;
-
+      if(!c || !c.peer) return;
       try{
-        const previous=screenCalls.get(c.peer);
-        if(previous){
-          try{ previous.close(); }catch(e){}
-        }
-
-        const call=peer.call(c.peer,screenStream,{
+        const call = peer.call(c.peer, stream, {
           metadata:{
             kind:'screen',
             nick,
-            shareSession:currentShareSession,
-            shareId:currentShareSession+'-'+Date.now()
+            shareSession,
+            shareId: `${nick}-${shareSession}`
           }
         });
 
-        screenCalls.set(c.peer,call);
-        applyShareQualityToViewer(c.peer,'auto');
+        if(call){
+          screenCalls.set(c.peer, call);
+          applyShareQualityToViewer(call);
 
-        call.on('close',()=>{
-          if(screenCalls.get(c.peer)===call){
-            screenCalls.delete(c.peer);
-          }
-        });
-      }catch(e){
-        console.error('Erro ao enviar compartilhamento para',c.peer,e);
+          call.on('close', ()=>{
+            if(screenCalls.get(c.peer)===call) screenCalls.delete(c.peer);
+          });
+          call.on('error', err=>{
+            console.warn('Erro na transmissão de tela para', c.peer, err);
+          });
+        }
+      }catch(err){
+        console.warn('Não foi possível enviar a tela para', c.peer, err);
       }
     });
 
-    toast(hasAudio
+    toast(audioTracks.length
       ? '🖥️ Compartilhamento iniciado • 🔊 áudio ativo'
-      : '🖥️ Compartilhamento iniciado • sem áudio');
+      : '🖥️ Compartilhamento iniciado • vídeo ativo');
 
-  }catch(e){
-    console.error('Screen share error:',e);
+  } catch(e){
+    if(stream){
+      stream.getTracks().forEach(t=>{ try{t.stop();}catch(_){} });
+    }
+    screenStream = null;
 
-    // Do not leave a partially created stream behind.
-    if(chosenStream && chosenStream!==screenStream){
-      chosenStream.getTracks().forEach(t=>{
-        try{t.stop();}catch(_){}
-      });
+    console.error('Screen share:', e);
+
+    let msg = 'Não foi possível compartilhar a tela.';
+    switch(e?.name){
+      case 'NotAllowedError':
+        msg = (!window.isSecureContext && location.hostname!=='localhost' && location.hostname!=='127.0.0.1')
+          ? '🔒 Bloqueado: abra a página em HTTPS ou localhost.'
+          : '🚫 Compartilhamento cancelado ou bloqueado pelo navegador.';
+        break;
+      case 'AbortError':
+        msg = '🚫 Compartilhamento cancelado.';
+        break;
+      case 'NotReadableError':
+        msg = '⚠️ Não foi possível ler a tela/janela escolhida.';
+        break;
+      case 'InvalidStateError':
+        msg = '⚠️ Abra a chamada normalmente e tente novamente.';
+        break;
+      case 'SecurityError':
+        msg = '🔒 O navegador bloqueou por segurança. Use HTTPS ou localhost.';
+        break;
+      case 'TypeError':
+        msg = '⚠️ O navegador não suporta esta captura de tela.';
+        break;
+      default:
+        if(e?.message) msg = `⚠️ ${e.message}`;
     }
 
-    const name=e?.name||'';
-    const message=String(e?.message||'');
-
-    if(name==='NotAllowedError' || name==='AbortError'){
-      toast('Compartilhamento cancelado ou bloqueado pelo navegador');
-    }else if(name==='NotReadableError'){
-      toast('Não foi possível ler a tela/janela escolhida');
-    }else if(name==='InvalidStateError'){
-      toast('Abra a call normalmente e tente compartilhar novamente');
-    }else if(name==='TypeError'){
-      toast('Seu navegador não suporta esta opção de compartilhamento');
-    }else{
-      toast('Não foi possível compartilhar: '+(message||name||'erro desconhecido'));
-    }
+    toast(msg);
   }
 }
 function renderLocalShare(){
