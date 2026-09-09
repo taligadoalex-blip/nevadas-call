@@ -71,7 +71,7 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
 .roleIcon{font-size:28px;margin-bottom:10px;font-weight:900;color:var(--red);width:42px;height:42px;border:1px solid #4a1a22;border-radius:10px;display:grid;place-items:center}.masterMenu{position:absolute;right:12px;top:12px;z-index:4}.masterMenuBtn{background:#111;color:#fff;border:1px solid #444;border-radius:9px;padding:8px 11px;font-weight:900}.memberMenu{position:absolute;right:12px;top:48px;background:#111;border:1px solid #444;border-radius:10px;padding:6px;display:none;z-index:8;min-width:150px}.memberMenu button{display:block;width:100%;background:none;border:0;color:#fff;text-align:left;padding:9px;border-radius:7px}.memberMenu button:hover{background:#25252a}.roleTitle{font-size:18px;font-weight:800;color:#fff}.roleDesc{font-size:12px;color:#999;line-height:1.5;margin-top:6px}
 .backRole{margin-top:16px;background:none;border:0;color:#999;cursor:pointer}
 @media(max-width:620px){.roleCards{grid-template-columns:1fr}}
-</style>
+\n</style>
 </head>
 <body>
 
@@ -139,8 +139,7 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
     <span class="status" id="status">Pronto</span>
     <button class="ctrl active" id="micBtn" onclick="toggleMic()" title="Microfone">🎙️ Microfone</button>
     <button class="ctrl active" id="headBtn" onclick="toggleHeadphones()" title="Fones">🔊 Áudio</button>
-    <button class="ctrl" onclick="openShare()" title="Compartilhar tela">🖥️ Tela</button>
-<button class="ctrl" onclick="openSettings()" title="Configurações">⚙️ Configurações</button>
+    <button class="ctrl" onclick="openShare()" title="Compartilhar tela">🖥️ Tela</button><button class="ctrl" onclick="openSettings()" title="Configurações">⚙️ Configurações</button>
     <button class="ctrl" id="shareQualityBtn" onclick="openShareQuality()" title="Qualidade da transmissão">🖥️ Qualidade</button>
     <button class="ctrl" onclick="toggleChat()" title="Mostrar/esconder chat">💬 Chat</button>
     <button class="ctrl danger" onclick="leave()">🚪 Sair</button>
@@ -152,13 +151,17 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
     <button class="close" onclick="closeShare()">×</button>
     <h2>Compartilhar tela</h2>
     <p class="sub">Escolha a fonte no seletor seguro do navegador e controle se o cursor será transmitido.</p>
-<div class="settingsRow"><span style="min-width:150px">CURSOR Cursor</span><select id="cursorMode"><option value="always">Mostrar cursor</option><option value="never">Ocultar cursor</option><option value="motion">Mostrar ao mover</option></select></div>
+<div class="settingsRow"><span style="min-width:150px">🖱️ Cursor</span><select id="cursorMode"><option value="always">Mostrar cursor</option><option value="never">Ocultar cursor</option><option value="motion">Mostrar ao mover</option></select></div>
+    <label style="display:flex;align-items:center;gap:10px;background:#0b0b0d;border:1px solid #2b2b30;border-radius:10px;padding:10px 12px;margin-bottom:10px;cursor:pointer">
+      <input id="shareAudioEnabled" type="checkbox" checked style="width:16px;height:16px">
+      <span>🔊 <b>Compartilhar áudio</b><small style="display:block;color:#888;margin-top:3px">O áudio disponível para a fonte escolhida será enviado junto com a transmissão.</small></span>
+    </label>
     <div style="background:#0b0b0d;border:1px solid #2b2b30;border-radius:12px;padding:11px 12px;color:#aaa;font-size:12px;line-height:1.4;margin-bottom:12px">
-      🔊 Som <b style="color:#ddd">Áudio isolado:</b> quando o navegador disponibilizar áudio para a fonte escolhida, somente o áudio daquela fonte é capturado — o áudio da NEVADAS CALL não é enviado pela captura.
+      🎬 <b style="color:#ddd">Compartilhamento estilo Discord:</b> escolha uma janela, tela ou aba. A seleção final e as opções de áudio dependem do Windows e do navegador.
     </div>
-    <button class="option" onclick="shareScreen('window')">🪟 Janela<small>Transmite somente a janela escolhida.</small></button>
-    <button class="option" onclick="shareScreen('screen')">🖥️ Tela inteira<small>Transmite a tela inteira escolhida.</small></button>
-    <button class="option" onclick="shareScreen('browser')">ABA Aba do navegador<small>Transmite somente a aba escolhida.</small></button>
+    <button class="option" onclick="shareScreen('window')">🪟 Janela<small>Escolha um aplicativo/janela para transmitir.</small></button>
+    <button class="option" onclick="shareScreen('screen')">🖥️ Tela inteira<small>Escolha um monitor para transmitir.</small></button>
+    <button class="option" onclick="shareScreen('browser')">🌐 Aba do navegador<small>Escolha uma aba e, quando disponível, o áudio dela.</small></button>
 <div id="shareActive" style="display:none"><button class="stopShare" onclick="stopShare()">⏹️ Parar compartilhamento</button></div>
   </div>
 </div>
@@ -252,6 +255,7 @@ function backToLogin(){
   $('role').style.display='none';
   $('login').style.display='flex';
   role='';
+  document.querySelectorAll('.masterOnly').forEach(el=>el.classList.remove('showMaster'));
 }
 function chooseRole(selected){
   role=selected;
@@ -260,6 +264,7 @@ function chooseRole(selected){
   $('welcome').textContent=nick;
 
   const isMaster=role==='master';
+  document.querySelectorAll('.masterOnly').forEach(el=>el.classList.toggle('showMaster',isMaster));
   $('homeDescription').textContent=isMaster
     ? 'Como Mestre, você pode criar uma sala e compartilhar o código com os Players.'
     : 'Como Player, coloque o código da sala que o Mestre enviou para você.';
@@ -271,6 +276,7 @@ function chooseRole(selected){
 function backToRole(){
   $('home').style.display='none';
   $('role').style.display='flex';
+  document.querySelectorAll('.masterOnly').forEach(el=>el.classList.remove('showMaster'));
 }
 $('nick').addEventListener('keydown',e=>{if(e.key==='Enter')enter()});
 
@@ -480,27 +486,66 @@ function closeShare(){$('shareModal').style.display='none'}
 async function shareScreen(type){
  try{
   if(screenStream)stopShare();
-   shareSession++;
-   const currentShareSession=shareSession;
+  shareSession++;
+  const currentShareSession=shareSession;
   const cursor=document.getElementById('cursorMode')?.value||'always';
-  const opts={video:{frameRate:{ideal:30,max:30},cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always'},audio:true};
+  const audioEnabled=document.getElementById('shareAudioEnabled')?.checked!==false;
+
+  // These are browser/OS hints that make the picker behave as closely as
+  // possible to Discord's application/window/screen sharing flow.
+  const displaySurface = type==='window' ? 'window' : type==='browser' ? 'browser' : 'monitor';
+  const opts={
+    video:{
+      displaySurface,
+      frameRate:{ideal:30,max:60},
+      cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always',
+      width:{ideal:1920},
+      height:{ideal:1080}
+    },
+    audio:audioEnabled ? {
+      suppressLocalAudioPlayback:true,
+      restrictOwnAudio:true
+    } : false,
+    selfBrowserSurface:'exclude',
+    surfaceSwitching:'include',
+    systemAudio:audioEnabled?'include':'exclude',
+    windowAudio:audioEnabled?'system':'exclude',
+    monitorTypeSurfaces:'include',
+    preferCurrentTab:false
+  };
+
   screenStream=await navigator.mediaDevices.getDisplayMedia(opts);
-  closeShare();renderLocalShare();$('shareActive').style.display='block';
-  $('status').textContent=screenStream.getAudioTracks().length?'Transmitindo vídeo + áudio da fonte':'Transmitindo vídeo (sem áudio da fonte)';
+  closeShare();
+  renderLocalShare();
+  $('shareActive').style.display='block';
+
+  const hasAudio=screenStream.getAudioTracks().length>0;
+  $('status').textContent=hasAudio?'Transmitindo vídeo + 🔊 áudio da fonte':'Transmitindo vídeo';
   const v=screenStream.getVideoTracks()[0];
   try{v.contentHint='motion'}catch(e){}
   v.addEventListener('ended',stopShare);
-  // Send screen to every participant. Captured audio belongs only to the selected source.
+
   connections.forEach(c=>{
    if(!c.open)return;
    const previous=screenCalls.get(c.peer);
    if(previous){try{previous.close()}catch(e){}}
-   const call=peer.call(c.peer,screenStream,{metadata:{kind:'screen',nick,shareSession:currentShareSession,shareId:currentShareSession+'-'+Date.now()}});
+   const call=peer.call(c.peer,screenStream,{
+     metadata:{
+       kind:'screen',
+       nick,
+       shareSession:currentShareSession,
+       shareId:currentShareSession+'-'+Date.now()
+     }
+   });
    screenCalls.set(c.peer,call);
    applyShareQualityToViewer(c.peer,'auto');
   });
-  toast(cursor==='never'?'Compartilhamento iniciado • cursor oculto':'Compartilhamento iniciado');
- }catch(e){console.error(e);toast(e.name==='NotAllowedError'?'Compartilhamento cancelado':'Não foi possível compartilhar')}
+
+  toast(hasAudio?'🖥️ Compartilhamento iniciado • 🔊 áudio ativo':'🖥️ Compartilhamento iniciado • sem áudio');
+ }catch(e){
+   console.error('Screen share:',e);
+   toast(e.name==='NotAllowedError'?'Compartilhamento cancelado':'Não foi possível compartilhar');
+ }
 }
 function renderLocalShare(){
  $('shareTile')?.remove();const t=document.createElement('div');t.className='tile sharing';t.id='shareTile';
