@@ -1,0 +1,41 @@
+{
+  "name": "nevadas-call-desktop",
+  "version": "0.2.0",
+  "description": "NEVADAS CALL desktop app with custom screen/window sharing picker",
+  "main": "main.js",
+  "author": "NEVADAS",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "^43.4.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.nevadas.call",
+    "productName": "NEVADAS CALL",
+    "files": [
+      "index.html",
+      "picker.html",
+      "main.js",
+      "preload.js"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "portable": {
+      "artifactName": "NEVADAS CALL Portable.exe"
+    }
+  },
+  "productName": "NEVADAS CALL"
+}

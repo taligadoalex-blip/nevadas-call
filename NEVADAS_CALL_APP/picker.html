@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compartilhar no NEVADAS</title>
+<style>
+:root{--bg:#080808;--panel:#111113;--panel2:#18181b;--red:#e5092f;--red2:#ff2448;--line:#2a2a2e;--text:#f5f5f5;--muted:#9999a0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#35000c,#080808 58%);color:var(--text);font-family:Inter,system-ui,Arial;min-height:100vh}.wrap{padding:26px;max-width:1100px;margin:auto}.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}.brand{font-size:20px;font-weight:900;letter-spacing:1.5px}.sub{color:var(--muted);font-size:13px;margin-top:5px}.actions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:#17171a;color:#fff;border-radius:10px;padding:9px 13px;font-weight:800;cursor:pointer}.btn.primary{background:linear-gradient(135deg,var(--red2),#b40022);border:0}.tabs{display:flex;gap:8px;margin-bottom:18px}.tab{border:1px solid var(--line);background:#101012;color:#bbb;border-radius:10px;padding:9px 13px;cursor:pointer}.tab.active{background:#2a1015;color:#fff;border-color:#7b1b2a}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}.source{background:rgba(17,17,19,.94);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:.18s transform,.18s border-color,.18s box-shadow}.source:hover{transform:translateY(-2px);border-color:#7d2634;box-shadow:0 14px 40px #000}.thumb{height:145px;background:#050505;display:flex;align-items:center;justify-content:center;overflow:hidden}.thumb img{width:100%;height:100%;object-fit:cover}.info{padding:12px 13px}.name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.type{font-size:11px;color:#777;margin-top:4px}.empty{text-align:center;color:#888;padding:70px 20px;border:1px dashed #333;border-radius:16px}.foot{margin-top:18px;color:#6f6f75;font-size:11px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><div><div class="brand">NEVADAS • COMPARTILHAR</div><div class="sub">Escolha uma fonte dentro do próprio NEVADAS.</div></div><div class="actions"><button class="btn" onclick="cancel()">Cancelar</button></div></div>
+  <div class="tabs"><button class="tab active" data-mode="all">Tudo</button><button class="tab" data-mode="screen">Telas</button><button class="tab" data-mode="window">Janelas</button></div>
+  <div id="grid" class="grid"></div>
+  <div class="foot">O áudio disponível depende do sistema operacional e da fonte selecionada.</div>
+</div>
+<script>
+let all=[];let mode='all';
+function filtered(){return all.filter(s=>mode==='all'||(mode==='screen'?s.id.startsWith('screen:'):s.id.startsWith('window:')))}
+function render(){const grid=document.getElementById('grid');grid.innerHTML='';const list=filtered();if(!list.length){grid.innerHTML='<div class="empty">Nenhuma fonte disponível nesta categoria.</div>';return}list.forEach(s=>{const card=document.createElement('div');card.className='source';card.onclick=()=>choose(s.id);card.innerHTML='<div class="thumb">'+(s.thumbnail?'<img src="'+s.thumbnail+'">':'')+'</div><div class="info"><div class="name"></div><div class="type">'+(s.id.startsWith('screen:')?'Tela':'Janela')+'</div></div>';card.querySelector('.name').textContent=s.name;grid.appendChild(card)})}
+async function load(){all=await window.nevadasDesktop.listSources();render()}
+async function choose(id){await window.nevadasDesktop.selectSource(id)}
+async function cancel(){await window.nevadasDesktop.cancelPicker()}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;render()});
+window.nevadasDesktop.onPickerRefresh(m=>{mode=m||'all';load()});load();
+</script>
+</body></html>
