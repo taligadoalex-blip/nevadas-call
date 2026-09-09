@@ -588,9 +588,16 @@ async function shareScreen(type){
       cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always'
     },
     audio:{
+      // REGRA CRÍTICA: nunca solicitar o áudio do sistema inteiro.
+      // Quando o Chromium oferecer áudio para uma janela, pedir somente
+      // o áudio pertencente à janela selecionada.
       restrictOwnAudio:true,
       suppressLocalAudioPlayback:true
     },
+    // Impede explicitamente a captura de áudio do sistema inteiro.
+    systemAudio:'exclude',
+    // Em Chromium que suporta esta opção, o áudio vem somente da janela.
+    windowAudio:'window',
     selfBrowserSurface:'exclude',
     surfaceSwitching:'exclude',
     monitorTypeSurfaces:'exclude'
@@ -619,13 +626,17 @@ async function shareScreen(type){
 
   // IMPORTANTE: não existe nenhuma segunda fonte de áudio.
   const audioTracks=screenStream.getAudioTracks();
-  console.log('Áudio fornecido pela janela:',audioTracks.length>0);
+  console.log('Áudio fornecido SOMENTE pela janela selecionada:',audioTracks.length>0);
+  // NÃO criamos MediaStreamDestination, loopback, captura do sistema,
+  // nem adicionamos qualquer faixa de áudio da call a este stream.
+  // O stream enviado aos outros participantes continua sendo o stream
+  // original retornado pelo getDisplayMedia para a janela escolhida.
 
   closeShare();
   renderLocalShare();
   $('shareActive').style.display='block';
   $('status').textContent=audioTracks.length
-    ? 'Transmitindo somente a janela escolhida + áudio dela'
+    ? 'Transmitindo somente a janela escolhida + áudio SOMENTE dela'
     : 'Transmitindo somente a janela escolhida (sem áudio disponível)';
 
   videoTrack.addEventListener('ended',stopShare);
@@ -654,7 +665,7 @@ async function shareScreen(type){
   });
 
   toast(audioTracks.length
-    ? 'Janela compartilhada com áudio isolado'
+    ? 'Janela compartilhada: áudio SOMENTE da janela escolhida'
     : 'Janela compartilhada; essa janela não disponibilizou áudio');
  }catch(e){
   console.error(e);
