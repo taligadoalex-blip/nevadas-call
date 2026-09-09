@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -153,13 +154,12 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
     <button class="close" onclick="closeShare()">×</button>
     <h2>🖥 Compartilhar tela</h2>
     <p class="sub">Escolha a fonte no seletor seguro do navegador e controle se o cursor será transmitido.</p>
-<div class="settingsRow"><span style="min-width:150px">🖱 Cursor</span><select id="cursorMode"><option value="always">Mostrar cursor</option><option value="never">Ocultar cursor</option><option value="motion">Mostrar ao mover</option></select></div>
-    <div style="background:#0b0b0d;border:1px solid #2b2b30;border-radius:12px;padding:11px 12px;color:#aaa;font-size:12px;line-height:1.4;margin-bottom:12px">
-      🔊 SOM <b style="color:#ddd">Áudio isolado:</b> quando o navegador disponibilizar áudio para a fonte escolhida, somente o áudio daquela fonte é capturado — o áudio da NEVADAS CALL não é enviado pela captura.
+<div class="settingsRow"><span style="min-width:150px">🖱 Cursor</span><select id="cursorMode"><option value="always">Mostrar cursor</option><option value="never">Ocultar cursor</option><option value="motion">Mostrar ao mover</option></select></div>    <div style="background:#0b0b0d;border:1px solid #2b2b30;border-radius:12px;padding:11px 12px;color:#aaa;font-size:12px;line-height:1.4;margin-bottom:12px">
+      🔊 SOM <b style="color:#ddd">Áudio da janela:</b> o compartilhamento solicita o áudio somente da janela escolhida.
+      O áudio da NEVADAS CALL e de outras janelas/apps não é misturado pela aplicação.
+      <br><span style="color:#777">Se o navegador/Windows não oferecer áudio para aquela janela, nenhum áudio será enviado.</span>
     </div>
-    <button class="option" onclick="shareScreen('window')">🪟 Janela<small>Transmite somente a janela escolhida.</small></button>
-    <button class="option" onclick="shareScreen('screen')">🖥 Tela inteira<small>Transmite a tela inteira escolhida.</small></button>
-    <button class="option" onclick="shareScreen('browser')">ABA Aba do navegador<small>Transmite somente a aba escolhida.</small></button>
+    <button class="option" onclick="shareScreen('window')">🪟 Escolher uma janela<small>Compartilha somente a janela escolhida, com o áudio dessa fonte quando o navegador disponibilizar.</small></button>
 <div id="shareActive" style="display:none"><button class="stopShare" onclick="stopShare()">⏹ Parar compartilhamento</button></div>
   </div>
 </div>
@@ -295,7 +295,7 @@ function handleIncomingCall(call){
  call.answer(localMic||new MediaStream());
  call.on('stream',stream=>{
    if(meta.kind==='screen'){
-     addRemoteShare(call.peer,meta.nick||'Participante',stream,meta.shareSession);
+     addRemoteShare(call.peer,meta.nick||'Participante',stream,meta.shareSession,meta.source);
    }else{
      addRemoteAudio(call.peer,meta.nick||'Participante',stream);
    }
@@ -429,47 +429,252 @@ function addMessage(user,text){const d=document.createElement('div');d.className
 function toggleChat(){const c=document.querySelector('.chat');c.style.display=c.style.display==='none'?'flex':'none'}
 function copyRoom(){navigator.clipboard?.writeText(room);toast('Código copiado: '+room)}
 
-function openShare(){if(role!=='master'){toast('Somente o Mestre pode compartilhar a tela');return}$('shareModal').style.display='flex';$('shareActive').style.display=screenStream?'block':'none'}
+function openShare(){
+ if(role!=='master'){
+   toast('Somente o Mestre pode compartilhar a tela');
+   return;
+ }
+ $('shareModal').style.display='flex';
+ $('shareActive').style.display=screenStream?'block':'none';
+}
+
 function closeShare(){$('shareModal').style.display='none'}
+
+
+let nevadasSelectedMicId = localStorage.getItem('nevadasSelectedMic') || '';
+let nevadasMicStream = null;
+let nevadasMicDevices = [];
+
+function micStatus(text, error=false){
+  const el=document.getElementById('micStatus');
+  if(el){ el.textContent=text; el.style.color=error?'#ff6b6b':''; }
+}
+
+async function loadMicrophones(){
+  const sel=document.getElementById('micSelect');
+  if(!sel || !navigator.mediaDevices?.enumerateDevices) return;
+
+  try{
+    const devices=await navigator.mediaDevices.enumerateDevices();
+    nevadasMicDevices=devices.filter(d=>d.kind==='audioinput');
+    sel.innerHTML='';
+    if(!nevadasMicDevices.length){
+      sel.innerHTML='<option value="">Nenhum microfone encontrado</option>';
+      micStatus('Nenhum microfone de entrada encontrado.',true);
+      return;
+    }
+    nevadasMicDevices.forEach((d,i)=>{
+      const o=document.createElement('option');
+      o.value=d.deviceId;
+      o.textContent=d.label || `Microfone ${i+1}`;
+      sel.appendChild(o);
+    });
+    if(nevadasMicDevices.some(d=>d.deviceId===nevadasSelectedMicId)){
+      sel.value=nevadasSelectedMicId;
+    }else{
+      sel.value=nevadasMicDevices[0].deviceId;
+      nevadasSelectedMicId=sel.value;
+      localStorage.setItem('nevadasSelectedMic',nevadasSelectedMicId);
+    }
+    micStatus(`Selecionado: ${sel.options[sel.selectedIndex]?.text || 'microfone'}`);
+  }catch(e){
+    micStatus('Não foi possível listar os microfones.',true);
+  }
+}
+
+async function requestMicPermission(){
+  try{
+    const s=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    s.getTracks().forEach(t=>t.stop());
+    await loadMicrophones();
+    return true;
+  }catch(e){
+    micStatus(`Permissão do microfone recusada: ${e.message}`,true);
+    return false;
+  }
+}
+
+async function getNevadasMicStream(){
+  const sel=document.getElementById('micSelect');
+  const id=sel?.value || nevadasSelectedMicId;
+  const audio=id ? {
+    deviceId:{exact:id},
+    echoCancellation:true,
+    noiseSuppression:true,
+    autoGainControl:true
+  } : {
+    echoCancellation:true,
+    noiseSuppression:true,
+    autoGainControl:true
+  };
+
+  const stream=await navigator.mediaDevices.getUserMedia({audio,video:false});
+  nevadasMicStream?.getTracks().forEach(t=>t.stop());
+  nevadasMicStream=stream;
+  const actual=stream.getAudioTracks()[0]?.getSettings()?.deviceId || id || '';
+  if(actual){
+    nevadasSelectedMicId=actual;
+    localStorage.setItem('nevadasSelectedMic',actual);
+  }
+  micStatus(`Microfone ativo: ${sel?.options[sel.selectedIndex]?.text || 'selecionado'}`);
+  return stream;
+}
+
+async function switchNevadasMic(id){
+  if(!id) return;
+  nevadasSelectedMicId=id;
+  localStorage.setItem('nevadasSelectedMic',id);
+
+  // If the microphone is already active, replace only the audio sender.
+  if(nevadasMicStream){
+    try{
+      const newStream=await getNevadasMicStream();
+      const track=newStream.getAudioTracks()[0];
+      if(typeof connections!=='undefined' && Array.isArray(connections)){
+        connections.forEach(call=>{
+          try{
+            const sender=call?.peerConnection?.getSenders?.().find(s=>s.track?.kind==='audio');
+            if(sender) sender.replaceTrack(track);
+          }catch(_){}
+        });
+      }
+      micStatus('Microfone trocado com sucesso.');
+    }catch(e){
+      micStatus(`Não foi possível trocar: ${e.message}`,true);
+    }
+  }else{
+    const sel=document.getElementById('micSelect');
+    micStatus(`Selecionado: ${sel?.options[sel.selectedIndex]?.text || 'microfone'}`);
+  }
+}
+
+async function setupNevadasMicControls(){
+  const sel=document.getElementById('micSelect');
+  const refresh=document.getElementById('refreshMicsBtn');
+  if(!sel) return;
+  sel.addEventListener('change',e=>switchNevadasMic(e.target.value));
+  refresh?.addEventListener('click',requestMicPermission);
+  navigator.mediaDevices?.addEventListener?.('devicechange',loadMicrophones);
+  await loadMicrophones();
+}
+
 async function shareScreen(type){
  try{
-  if(screenStream)stopShare();
-  shareSession++;
-  const currentShareSession=shareSession;
-  const cursor=document.getElementById('cursorMode')?.value||'always';
-
-  // No aplicativo desktop, o próprio NEVADAS/Electron abre o seletor de telas/janelas.
-  // O Chrome/Google não fornece o seletor nesse modo.
-  if(window.nevadasDesktop?.isApp){
-    const mode = type==='screen' ? 'screen' : (type==='window' ? 'window' : 'all');
-    await window.nevadasDesktop.openPicker(mode);
+  // O app aceita SOMENTE uma janela. Tela inteira e aba ficam bloqueadas.
+  if(type!=='window'){
+    toast('O compartilhamento é somente por janela.');
+    return;
   }
 
-  // Solicita o áudio da fonte compartilhada e pede ao Chromium para excluir
-  // o áudio próprio do aplicativo quando esse recurso estiver disponível.
+  if(screenStream)stopShare();
+
+  shareSession++;
+  const currentShareSession=shareSession;
+  const cursor=$('cursorMode')?.value||'always';
+
+  /*
+   * Captura isolada:
+   * - video = janela selecionada
+   * - audio = somente o áudio que o navegador disponibilizar para essa fonte
+   * - nenhum microfone/áudio da call/loopback do sistema é adicionado
+   *
+   * As opções abaixo também evitam sugerir a própria aba e monitores,
+   * quando suportadas pelo Chromium.
+   */
   const opts={
-    video:{frameRate:{ideal:30,max:60},cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always'},
-    audio:{restrictOwnAudio:true}
+    video:{
+      displaySurface:'window',
+      frameRate:{ideal:30,max:60},
+      cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always'
+    },
+    audio:{
+      restrictOwnAudio:true,
+      suppressLocalAudioPlayback:true
+    },
+    selfBrowserSurface:'exclude',
+    surfaceSwitching:'exclude',
+    monitorTypeSurfaces:'exclude'
   };
+
+  if(window.nevadasDesktop?.isApp && typeof window.nevadasDesktop.openPicker==='function'){
+    try{
+      await window.nevadasDesktop.openPicker('window');
+    }catch(e){
+      console.warn('Picker desktop não disponível; usando o seletor do Chromium.',e);
+    }
+  }
+
   screenStream=await navigator.mediaDevices.getDisplayMedia(opts);
 
-  closeShare();renderLocalShare();$('shareActive').style.display='block';
-  $('status').textContent='Transmitindo vídeo e áudio da fonte escolhida';
-  const v=screenStream.getVideoTracks()[0];
-  v.addEventListener('ended',stopShare);
+  const videoTrack=screenStream.getVideoTracks()[0];
+  if(!videoTrack)throw new Error('Nenhuma janela foi selecionada.');
+
+  // Se o navegador informar a superfície, exigimos "window".
+  const surface=videoTrack.getSettings?.().displaySurface;
+  if(surface && surface!=='window'){
+    screenStream.getTracks().forEach(t=>{try{t.stop()}catch(e){}});
+    screenStream=null;
+    throw new Error('Selecione uma janela, não uma tela ou aba.');
+  }
+
+  // IMPORTANTE: não existe nenhuma segunda fonte de áudio.
+  const audioTracks=screenStream.getAudioTracks();
+  console.log('Áudio fornecido pela janela:',audioTracks.length>0);
+
+  closeShare();
+  renderLocalShare();
+  $('shareActive').style.display='block';
+  $('status').textContent=audioTracks.length
+    ? 'Transmitindo somente a janela escolhida + áudio dela'
+    : 'Transmitindo somente a janela escolhida (sem áudio disponível)';
+
+  videoTrack.addEventListener('ended',stopShare);
+
   connections.forEach(c=>{
    if(!c.open)return;
+
    const previous=screenCalls.get(c.peer);
-   if(previous){try{previous.close()}catch(e){}}
-   const call=peer.call(c.peer,screenStream,{metadata:{kind:'screen',nick,shareSession:currentShareSession,shareId:currentShareSession+'-'+Date.now()}});
+   if(previous){
+     try{previous.close()}catch(e){}
+   }
+
+   // Envia EXATAMENTE o stream da janela. Não mistura o localMic.
+   const call=peer.call(c.peer,screenStream,{
+     metadata:{
+       kind:'screen',
+       nick,
+       shareSession:currentShareSession,
+       shareId:currentShareSession+'-'+Date.now(),
+       source:'window-only',
+       hasSourceAudio:audioTracks.length>0
+     }
+   });
+
    screenCalls.set(c.peer,call);
   });
-  toast('Compartilhamento iniciado');
- }catch(e){console.error(e);toast(e.name==='NotAllowedError'?'Compartilhamento cancelado':'Não foi possível compartilhar')}
+
+  toast(audioTracks.length
+    ? 'Janela compartilhada com áudio isolado'
+    : 'Janela compartilhada; essa janela não disponibilizou áudio');
+ }catch(e){
+  console.error(e);
+
+  if(screenStream){
+    screenStream.getTracks().forEach(t=>{try{t.stop()}catch(err){}});
+    screenStream=null;
+  }
+
+  toast(
+    e.name==='NotAllowedError'
+      ? 'Compartilhamento cancelado'
+      : (e.message||'Não foi possível compartilhar essa janela')
+  );
+ }
 }
+
 function renderLocalShare(){
  $('shareTile')?.remove();const t=document.createElement('div');t.className='tile sharing';t.id='shareTile';
- const v=document.createElement('video');v.autoplay=true;v.muted=true;v.playsInline=true;v.srcObject=screenStream;v.className='sharePreview';v.style.display='block';t.appendChild(v);
+ const v=document.createElement('video');v.autoplay=true;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.srcObject=screenStream;v.className='sharePreview';v.style.display='block';t.appendChild(v);
  const n=document.createElement('div');n.className='name';n.textContent=nick+' • compartilhando';t.appendChild(n);
  const full=document.createElement('button');full.className='shareFullBtn';full.textContent='TELA CHEIA Tela cheia';full.onclick=()=>toggleShareFullscreen(t,full);t.appendChild(full);
   const stop=document.createElement('button');stop.className='stopShare';stop.textContent='⏹ Parar compartilhamento';stop.style.position='absolute';stop.style.right='14px';stop.style.bottom='14px';stop.style.width='auto';stop.onclick=stopShare;t.appendChild(stop);
@@ -479,7 +684,7 @@ let shareSession=0;
 
 function normalizeShareOwner(name){return String(name||'').trim().toLowerCase();}
 
-function addRemoteShare(id,name,stream,sessionId){
+function addRemoteShare(id,name,stream,sessionId,source='window-only'){
   const owner=normalizeShareOwner(name);
   removeRemoteSharesByOwner(owner);
 
@@ -501,7 +706,7 @@ function addRemoteShare(id,name,stream,sessionId){
 
   const n=document.createElement('div');
   n.className='name';
-  n.textContent=name+' • compartilhando';
+  n.textContent=name+' • janela compartilhada';
   t.appendChild(n);
 
   const full=document.createElement('button');
@@ -561,7 +766,7 @@ function addRemoteShare(id,name,stream,sessionId){
     audioBox.style.opacity='.45';
     mute.disabled=true;
     slider.disabled=true;
-    audioBox.title='Esta fonte de compartilhamento não enviou áudio.';
+    audioBox.title='A janela escolhida não disponibilizou áudio ao navegador.';
   }
 
   const track=stream.getVideoTracks?.()[0];
@@ -665,6 +870,13 @@ function leave(){
  stopShare();connections.forEach(c=>{try{c.close()}catch(e){}});calls.forEach(c=>{try{c.close()}catch(e){}});if(localMic)localMic.getTracks().forEach(t=>t.stop());if(peer)peer.destroy();location.reload();
 }
 function toast(t){const x=$('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',2300)}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>setupNevadasMicControls().catch(()=>{}));
+window.addEventListener('beforeunload',()=>{
+  try{nevadasMicStream?.getTracks().forEach(t=>t.stop())}catch(_){}
+});
 </script>
 </body>
 </html>
