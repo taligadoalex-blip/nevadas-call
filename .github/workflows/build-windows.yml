@@ -3,7 +3,8 @@ name: Build NEVADAS CALL for Windows
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -20,13 +21,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: package-lock.json
 
       - name: Instalar dependências
+        working-directory: NEVADAS_CALL_APP
         run: npm install
 
       - name: Gerar NEVADAS CALL Portable.exe
+        working-directory: NEVADAS_CALL_APP
         run: npm run dist
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
@@ -35,5 +36,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: NEVADAS-CALL-Windows-x64
-          path: dist/NEVADAS CALL Portable.exe
+          path: NEVADAS_CALL_APP/dist/*.exe
           if-no-files-found: error
