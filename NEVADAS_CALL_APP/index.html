@@ -308,14 +308,14 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
   <div class="modalBox">
     <button class="close" onclick="closeShare()">×</button>
     <h2>Compartilhar tela</h2>
-    <p class="sub">Escolha a fonte no seletor seguro do navegador e controle se o cursor será transmitido.</p>
+    <p class="sub">Escolha a tela, janela ou aba no seletor do navegador. O áudio depende da fonte e do navegador.</p>
 <div class="settingsRow"><span style="min-width:150px">🖱️ Cursor</span><select id="cursorMode"><option value="always">Mostrar cursor</option><option value="never">Ocultar cursor</option><option value="motion">Mostrar ao mover</option></select></div>
     <label style="display:flex;align-items:center;gap:10px;background:#0b0b0d;border:1px solid #2b2b30;border-radius:10px;padding:10px 12px;margin-bottom:10px;cursor:pointer">
       <input id="shareAudioEnabled" type="checkbox" checked style="width:16px;height:16px">
       <span>🔊 <b>Compartilhar áudio</b><small style="display:block;color:#888;margin-top:3px">O áudio disponível para a fonte escolhida será enviado junto com a transmissão.</small></span>
     </label>
     <div style="background:#0b0b0d;border:1px solid #2b2b30;border-radius:12px;padding:11px 12px;color:#aaa;font-size:12px;line-height:1.4;margin-bottom:12px">
-      🎬 <b style="color:#ddd">Compartilhamento estilo Discord:</b> escolha uma janela, tela ou aba. A seleção final e as opções de áudio dependem do Windows e do navegador.
+      🎬 <b style="color:#ddd">Compatível com Chrome/Edge:</b> escolha uma janela, tela ou aba. Se o áudio não estiver disponível, a transmissão continua somente com vídeo.
     </div>
     <button class="option" onclick="shareScreen('window')">🪟 Janela<small>Escolha um aplicativo/janela para transmitir.</small></button>
     <button class="option" onclick="shareScreen('screen')">🖥️ Tela inteira<small>Escolha um monitor para transmitir.</small></button>
@@ -650,87 +650,138 @@ function copyRoom(){navigator.clipboard?.writeText(room);toast('Código copiado:
 function openShare(){if(role!=='master'){toast('Somente o Mestre pode compartilhar a tela');return}$('shareModal').style.display='flex';$('shareActive').style.display=screenStream?'block':'none'}
 function closeShare(){$('shareModal').style.display='none'}
 async function shareScreen(type){
- try{
-  if(screenStream)stopShare();
-  shareSession++;
-  const currentShareSession=shareSession;
-  const cursor=document.getElementById('cursorMode')?.value||'always';
-  const audioEnabled=document.getElementById('shareAudioEnabled')?.checked!==false;
-
-  // These are browser/OS hints that make the picker behave as closely as
-  // possible to Discord's application/window/screen sharing flow.
-  const displaySurface = type==='window' ? 'window' : type==='browser' ? 'browser' : 'monitor';
-  const opts={
-    video:{
-      displaySurface,
-      frameRate:{ideal:30,max:60},
-      cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always',
-      width:{ideal:1920},
-      height:{ideal:1080}
-    },
-    // IMPORTANTE: quando a fonte é uma JANELA, o áudio deve vir somente
-    // daquela janela. Nunca pedir o áudio do sistema inteiro.
-    audio:audioEnabled ? {
-      suppressLocalAudioPlayback:true,
-      restrictOwnAudio:true
-    } : false,
-    selfBrowserSurface:'exclude',
-    surfaceSwitching:'include',
-    systemAudio:'exclude',
-    windowAudio:type==='window' && audioEnabled ? 'window' : 'exclude',
-    monitorTypeSurfaces:type==='window' ? 'exclude' : 'include',
-    preferCurrentTab:false
-  };
-
-  // Chrome/Edge can reject some optional capture hints depending on the
-  // selected source or browser version. Start with the Discord-like hints,
-  // then fall back to the universally supported capture options instead of
-  // failing the whole share.
+  let chosenStream = null;
   try{
-    screenStream=await navigator.mediaDevices.getDisplayMedia(opts);
-  }catch(firstError){
-    if(firstError?.name==='NotAllowedError' || firstError?.name==='AbortError') throw firstError;
-    console.warn('Capture hints rejected, retrying with safe options:',firstError);
-    // Não usar um fallback com audio:true: isso pode transformar a captura
-    // em áudio do sistema inteiro. Para janela, exigimos áudio da própria janela.
-    screenStream=await navigator.mediaDevices.getDisplayMedia({
-      video:{cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always'},
-      audio:audioEnabled ? {suppressLocalAudioPlayback:true,restrictOwnAudio:true} : false,
-      systemAudio:'exclude',
-      windowAudio:type==='window' && audioEnabled ? 'window' : 'exclude'
+    if(role!=='master'){
+      toast('Somente o Mestre pode compartilhar a tela');
+      return;
+    }
+
+    if(screenStream) stopShare();
+
+    shareSession++;
+    const currentShareSession=shareSession;
+    const cursor=document.getElementById('cursorMode')?.value||'always';
+    const audioEnabled=document.getElementById('shareAudioEnabled')?.checked!==false;
+
+    // getDisplayMedia must be called directly from the user's click.
+    // Keep the first request conservative for maximum Chrome/Edge compatibility.
+    const baseVideo = {
+      cursor: cursor==='never' ? 'never' : cursor==='motion' ? 'motion' : 'always',
+      frameRate: { ideal: 30, max: 60 },
+      width: { ideal: 1920 },
+      height: { ideal: 1080 }
+    };
+
+    const requests = [
+      {
+        video: baseVideo,
+        audio: audioEnabled
+      },
+      {
+        video: baseVideo,
+        audio: false
+      }
+    ];
+
+    let lastError = null;
+
+    for(let i=0;i<requests.length;i++){
+      try{
+        chosenStream = await navigator.mediaDevices.getDisplayMedia(requests[i]);
+        break;
+      }catch(e){
+        lastError = e;
+
+        // User explicitly cancelled the browser picker.
+        if(e?.name==='NotAllowedError' || e?.name==='AbortError'){
+          throw e;
+        }
+
+        // If audio caused the failure, retry once without audio.
+        if(i===0) continue;
+        throw e;
+      }
+    }
+
+    if(!chosenStream) throw lastError || new Error('Nenhuma fonte de compartilhamento foi selecionada.');
+
+    screenStream=chosenStream;
+    closeShare();
+    renderLocalShare();
+    $('shareActive').style.display='block';
+
+    const hasAudio=screenStream.getAudioTracks().length>0;
+    $('status').textContent=hasAudio
+      ? 'Transmitindo vídeo + 🔊 áudio da fonte'
+      : 'Transmitindo vídeo';
+
+    const v=screenStream.getVideoTracks()[0];
+    try{ v.contentHint='motion'; }catch(e){}
+
+    // If the user stops sharing from the browser's own UI, clean everything up.
+    v?.addEventListener('ended', stopShare, {once:true});
+
+    connections.forEach(c=>{
+      if(!c.open) return;
+
+      try{
+        const previous=screenCalls.get(c.peer);
+        if(previous){
+          try{ previous.close(); }catch(e){}
+        }
+
+        const call=peer.call(c.peer,screenStream,{
+          metadata:{
+            kind:'screen',
+            nick,
+            shareSession:currentShareSession,
+            shareId:currentShareSession+'-'+Date.now()
+          }
+        });
+
+        screenCalls.set(c.peer,call);
+        applyShareQualityToViewer(c.peer,'auto');
+
+        call.on('close',()=>{
+          if(screenCalls.get(c.peer)===call){
+            screenCalls.delete(c.peer);
+          }
+        });
+      }catch(e){
+        console.error('Erro ao enviar compartilhamento para',c.peer,e);
+      }
     });
+
+    toast(hasAudio
+      ? '🖥️ Compartilhamento iniciado • 🔊 áudio ativo'
+      : '🖥️ Compartilhamento iniciado • sem áudio');
+
+  }catch(e){
+    console.error('Screen share error:',e);
+
+    // Do not leave a partially created stream behind.
+    if(chosenStream && chosenStream!==screenStream){
+      chosenStream.getTracks().forEach(t=>{
+        try{t.stop();}catch(_){}
+      });
+    }
+
+    const name=e?.name||'';
+    const message=String(e?.message||'');
+
+    if(name==='NotAllowedError' || name==='AbortError'){
+      toast('Compartilhamento cancelado ou bloqueado pelo navegador');
+    }else if(name==='NotReadableError'){
+      toast('Não foi possível ler a tela/janela escolhida');
+    }else if(name==='InvalidStateError'){
+      toast('Abra a call normalmente e tente compartilhar novamente');
+    }else if(name==='TypeError'){
+      toast('Seu navegador não suporta esta opção de compartilhamento');
+    }else{
+      toast('Não foi possível compartilhar: '+(message||name||'erro desconhecido'));
+    }
   }
-  closeShare();
-  renderLocalShare();
-  $('shareActive').style.display='block';
-
-  const hasAudio=screenStream.getAudioTracks().length>0;
-  $('status').textContent=hasAudio?'Transmitindo vídeo + 🔊 áudio da fonte':'Transmitindo vídeo';
-  const v=screenStream.getVideoTracks()[0];
-  try{v.contentHint='motion'}catch(e){}
-  v.addEventListener('ended',stopShare);
-
-  connections.forEach(c=>{
-   if(!c.open)return;
-   const previous=screenCalls.get(c.peer);
-   if(previous){try{previous.close()}catch(e){}}
-   const call=peer.call(c.peer,screenStream,{
-     metadata:{
-       kind:'screen',
-       nick,
-       shareSession:currentShareSession,
-       shareId:currentShareSession+'-'+Date.now()
-     }
-   });
-   screenCalls.set(c.peer,call);
-   applyShareQualityToViewer(c.peer,'auto');
-  });
-
-  toast(hasAudio?'🖥️ Compartilhamento iniciado • 🔊 áudio ativo':'🖥️ Compartilhamento iniciado • sem áudio');
- }catch(e){
-   console.error('Screen share:',e);
-   toast(e.name==='NotAllowedError'?'Compartilhamento cancelado':'Não foi possível compartilhar');
- }
 }
 function renderLocalShare(){
  $('shareTile')?.remove();const t=document.createElement('div');t.className='tile sharing';t.id='shareTile';
