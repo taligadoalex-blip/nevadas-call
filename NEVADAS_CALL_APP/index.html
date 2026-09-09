@@ -35,7 +35,7 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
 .tile{position:relative;min-height:190px;background:linear-gradient(145deg,#19191d,#0d0d0f);border:1px solid #2a2a2e;border-radius:18px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .avatar{width:82px;height:82px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#ff2448,#5e0014);font-size:29px;font-weight:900}
 .name{position:absolute;left:13px;bottom:11px;background:#09090acc;padding:7px 10px;border-radius:9px;font-size:13px}
-.micDot{position:absolute;right:13px;bottom:13px;color:#8f8f95}.voiceControls{position:absolute;right:12px;top:12px;display:flex;align-items:center;gap:5px;background:#08080acc;border:1px solid #333;border-radius:9px;padding:5px 7px;z-index:2}.voiceControls button{background:#1b1b1f;color:#fff;border:1px solid #444;border-radius:6px;padding:3px 6px;font-size:10px;font-weight:800}.voiceControls input{width:70px;padding:0;height:5px}.voiceVolumeValue{font-size:10px;color:#aaa;min-width:28px;text-align:right}
+.micDot{position:absolute;right:13px;bottom:13px;color:#8f8f95}
 .tile.sharing{grid-column:1/-1;min-height:280px;background:#050505}
 .sharePreview{max-width:88%;max-height:80%;border-radius:10px;border:1px solid #333;display:none}
 .chat{border-left:1px solid var(--line);background:#0e0e10;display:flex;flex-direction:column;min-height:0}
@@ -71,7 +71,9 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
 .roleIcon{font-size:28px;margin-bottom:10px;font-weight:900;color:var(--red);width:42px;height:42px;border:1px solid #4a1a22;border-radius:10px;display:grid;place-items:center}.masterMenu{position:absolute;right:12px;top:12px;z-index:4}.masterMenuBtn{background:#111;color:#fff;border:1px solid #444;border-radius:9px;padding:8px 11px;font-weight:900}.memberMenu{position:absolute;right:12px;top:48px;background:#111;border:1px solid #444;border-radius:10px;padding:6px;display:none;z-index:8;min-width:150px}.memberMenu button{display:block;width:100%;background:none;border:0;color:#fff;text-align:left;padding:9px;border-radius:7px}.memberMenu button:hover{background:#25252a}.roleTitle{font-size:18px;font-weight:800;color:#fff}.roleDesc{font-size:12px;color:#999;line-height:1.5;margin-top:6px}
 .backRole{margin-top:16px;background:none;border:0;color:#999;cursor:pointer}
 @media(max-width:620px){.roleCards{grid-template-columns:1fr}}
-\n</style>
+
+.masterPanelBtn{display:none}.masterPanel{display:none;position:fixed;inset:0;background:#000b;z-index:30;align-items:flex-end;justify-content:center}.masterPanel.open{display:flex}.masterPanelBox{width:min(760px,96vw);max-height:88vh;overflow:auto;background:#111116;border:1px solid #38383f;border-radius:22px 22px 0 0;padding:22px;box-shadow:0 -20px 80px #000;animation:panelUp .45s ease-out}.masterGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.masterField{background:#18181c;border:1px solid #303037;border-radius:13px;padding:12px}.masterField label{display:block;color:#aaa;font-size:12px;margin-bottom:7px}.masterField input[type=color]{width:100%;height:42px;border:0;background:none}.masterField input[type=text],.masterField select{width:100%;padding:10px;border-radius:9px;border:1px solid #333;background:#0b0b0d;color:#fff}.presetRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.preset{background:#1d1d22;color:#fff;border:1px solid #36363d;border-radius:9px;padding:8px 11px}.themeActions{display:flex;gap:8px;margin-top:14px}.themeActions button{flex:1;padding:11px;border-radius:10px;border:1px solid #333;background:#1d1d22;color:#fff;font-weight:800}.themeActions .applyTheme{background:#b40022;border-color:#ff3152}.themePreview{height:90px;border-radius:13px;margin-top:12px;border:1px solid #333;background:linear-gradient(135deg,#080808,#30000b)}.presetSaved{font-size:12px;color:#6ee7a0;margin-top:8px;min-height:16px}.themeFade{position:fixed;inset:0;z-index:100;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.98),transparent 72%);opacity:0;transform:translateY(100%)}.themeFade.run{animation:themeFadeUp 1.15s ease-out}.themeBg{position:fixed;inset:0;z-index:-1;pointer-events:none;background-position:center;background-size:cover;background-repeat:no-repeat;opacity:0;transition:opacity .6s ease}.app{position:relative}.stage,.chat,.top,.controls{position:relative;z-index:1}@keyframes themeFadeUp{0%{opacity:1;transform:translateY(100%)}55%{opacity:.72;transform:translateY(0)}100%{opacity:0;transform:translateY(-5%)} }@keyframes panelUp{from{transform:translateY(100%);opacity:.4}to{transform:translateY(0);opacity:1}}@media(max-width:620px){.masterGrid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
@@ -95,7 +97,7 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
       <button class="roleCard" onclick="chooseRole('master')"><div class="roleIcon">M</div><div class="roleTitle">Mestre</div><div class="roleDesc">Cria uma nova sala e recebe o código para compartilhar.</div></button>
       <button class="roleCard" onclick="chooseRole('player')"><div class="roleIcon">P</div><div class="roleTitle">Player</div><div class="roleDesc">Entra em uma sala existente usando o código do Mestre.</div></button>
     </div>
-    <button class="backRole" onclick="backToLogin()">↩️ Voltar</button>
+    <button class="backRole" onclick="backToLogin()">↩ Voltar</button>
   </div>
 </section>
 
@@ -104,9 +106,9 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
     <div class="logo"><div class="logoMark">R</div> NEVADAS CALL</div>
     <h1>Olá, <span id="welcome"></span>.</h1>
     <p class="sub" id="homeDescription"></p>
-    <button class="primary" id="createRoomBtn" onclick="createRoom()">+ Criar sala</button>
+    <button class="primary" id="createRoomBtn" onclick="createRoom()">➕ Criar sala</button>
     <button class="secondary" id="joinRoomBtn" onclick="joinPrompt()">🚪 Entrar na sala</button>
-    <button class="backRole" onclick="backToRole()">↩️ Trocar papel</button>
+    <button class="backRole" onclick="backToRole()">↩ Trocar papel</button>
     <div id="homeError" class="error"></div>
   </div>
 </section>
@@ -121,7 +123,7 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
     <div class="stage" id="stage">
       <div class="tile" id="myTile">
         <div class="avatar" id="myAvatar"></div>
-        <div class="name" id="myName"></div><div class="micDot" id="myMic">🎙️ Microfone</div>
+        <div class="name" id="myName"></div><div class="micDot" id="myMic">🎙 MIC</div>
       </div>
     </div>
 
@@ -137,11 +139,11 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
 
   <footer class="controls">
     <span class="status" id="status">Pronto</span>
-    <button class="ctrl active" id="micBtn" onclick="toggleMic()" title="Microfone">🎙️ Microfone</button>
-    <button class="ctrl active" id="headBtn" onclick="toggleHeadphones()" title="Fones">🔊 Áudio</button>
-    <button class="ctrl" onclick="openShare()" title="Compartilhar tela">🖥️ Tela</button><button class="ctrl" onclick="openSettings()" title="Configurações">⚙️ Configurações</button>
-    <button class="ctrl" id="shareQualityBtn" onclick="openShareQuality()" title="Qualidade da transmissão">🖥️ Qualidade</button>
-    <button class="ctrl" onclick="toggleChat()" title="Mostrar/esconder chat">💬 Chat</button>
+    <button class="ctrl active" id="micBtn" onclick="toggleMic()" title="Microfone">🎙 MIC</button>
+    <button class="ctrl active" id="headBtn" onclick="toggleHeadphones()" title="Fones">🔊 AUDIO</button>
+    <button class="ctrl" onclick="openShare()" title="🖥 Compartilhar tela">🖥 Tela</button>
+<button class="ctrl masterPanelBtn" id="masterPanelBtn" onclick="openMasterPanel()" title="Painel do Mestre">♛ Painel do Mestre</button><button class="ctrl" onclick="openSettings()" title="Configurações">⚙ CFG</button>
+    <button class="ctrl" onclick="toggleChat()" title="Mostrar/esconder chat">💬 CHAT</button>
     <button class="ctrl danger" onclick="leave()">🚪 Sair</button>
   </footer>
 </section>
@@ -149,47 +151,43 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
 <div class="modal" id="shareModal">
   <div class="modalBox">
     <button class="close" onclick="closeShare()">×</button>
-    <h2>Compartilhar tela</h2>
+    <h2>🖥 Compartilhar tela</h2>
     <p class="sub">Escolha a fonte no seletor seguro do navegador e controle se o cursor será transmitido.</p>
-<div class="settingsRow"><span style="min-width:150px">🖱️ Cursor</span><select id="cursorMode"><option value="always">Mostrar cursor</option><option value="never">Ocultar cursor</option><option value="motion">Mostrar ao mover</option></select></div>
-    <label style="display:flex;align-items:center;gap:10px;background:#0b0b0d;border:1px solid #2b2b30;border-radius:10px;padding:10px 12px;margin-bottom:10px;cursor:pointer">
-      <input id="shareAudioEnabled" type="checkbox" checked style="width:16px;height:16px">
-      <span>🔊 <b>Compartilhar áudio</b><small style="display:block;color:#888;margin-top:3px">O áudio disponível para a fonte escolhida será enviado junto com a transmissão.</small></span>
-    </label>
+<div class="settingsRow"><span style="min-width:150px">🖱 Cursor</span><select id="cursorMode"><option value="always">Mostrar cursor</option><option value="never">Ocultar cursor</option><option value="motion">Mostrar ao mover</option></select></div>
     <div style="background:#0b0b0d;border:1px solid #2b2b30;border-radius:12px;padding:11px 12px;color:#aaa;font-size:12px;line-height:1.4;margin-bottom:12px">
-      🎬 <b style="color:#ddd">Compartilhamento estilo Discord:</b> escolha uma janela, tela ou aba. A seleção final e as opções de áudio dependem do Windows e do navegador.
+      🔊 SOM <b style="color:#ddd">Áudio isolado:</b> quando o navegador disponibilizar áudio para a fonte escolhida, somente o áudio daquela fonte é capturado — o áudio da NEVADAS CALL não é enviado pela captura.
     </div>
-    <button class="option" onclick="shareScreen('window')">🪟 Janela<small>Escolha um aplicativo/janela para transmitir.</small></button>
-    <button class="option" onclick="shareScreen('screen')">🖥️ Tela inteira<small>Escolha um monitor para transmitir.</small></button>
-    <button class="option" onclick="shareScreen('browser')">🌐 Aba do navegador<small>Escolha uma aba e, quando disponível, o áudio dela.</small></button>
-<div id="shareActive" style="display:none"><button class="stopShare" onclick="stopShare()">⏹️ Parar compartilhamento</button></div>
+    <button class="option" onclick="shareScreen('window')">🪟 Janela<small>Transmite somente a janela escolhida.</small></button>
+    <button class="option" onclick="shareScreen('screen')">🖥 Tela inteira<small>Transmite a tela inteira escolhida.</small></button>
+    <button class="option" onclick="shareScreen('browser')">ABA Aba do navegador<small>Transmite somente a aba escolhida.</small></button>
+<div id="shareActive" style="display:none"><button class="stopShare" onclick="stopShare()">⏹ Parar compartilhamento</button></div>
   </div>
 </div>
 
 <div class="modal" id="settingsModal"><div class="modalBox">
 <button class="close" onclick="closeSettings()">×</button>
 <h2>Configurações</h2>
-<div class="settingsRow"><span style="min-width:95px">🎙️ Microfone</span><select id="micSelect"></select></div>
+<div class="settingsRow"><span style="min-width:95px">🎙 Microfone</span><select id="micSelect"></select></div>
 <p class="sub" style="font-size:12px;margin-bottom:4px">Escolha o microfone usado pela call.</p>
 <div class="settingsRow"><span style="min-width:145px">🎚 Sensibilidade</span><input id="voiceSensitivity" type="range" min="0.01" max="0.12" step="0.005" value="0.035" style="padding:0"></div>
 <div style="display:flex;justify-content:space-between;color:#888;font-size:11px"><span>Mais sensível</span><span id="sensitivityValue">0.035</span><span>Menos sensível</span></div>
 <p class="sub" style="font-size:12px;margin:8px 0 0">A onda sonora só aparece quando o volume do microfone passa deste limite.</p>
-<button class="primary" onclick="applyMic()">Salvar configurações</button>
-</div></div>
-<div class="modal" id="shareQualityModal"><div class="modalBox">
-<button class="close" onclick="closeShareQuality()">×</button>
-<h2>Qualidade da transmissão</h2>
-<p class="sub">Escolha como você prefere receber a tela compartilhada. Isso afeta somente a sua transmissão recebida.</p>
-<div class="settingsRow"><span style="min-width:120px">QUALIDADE</span><select id="shareQuality">
-<option value="auto">Automática — melhor equilíbrio</option>
-<option value="smooth">Fluida — 480p / 20 FPS</option>
-<option value="balanced">Equilibrada — 720p / 30 FPS</option>
-<option value="quality">Qualidade — até 1080p / 30 FPS</option>
-</select></div>
-<p class="sub" style="font-size:12px;margin:10px 0 0">Se estiver travando no celular ou PC, use <b>Fluida</b>. O Mestre continua transmitindo normalmente para os outros Players.</p>
-<button class="primary" onclick="applyShareQuality()">Salvar qualidade</button>
+<button class="primary" onclick="applyMic()">💾 Salvar configurações</button>
 </div></div>
 <div class="toast" id="toast"></div>
+<div class="themeBg" id="themeBg"></div><div class="themeFade" id="themeFade"></div>
+<div class="masterPanel" id="masterPanel"><div class="masterPanelBox">
+<button class="close" onclick="closeMasterPanel()">×</button><h2>♛ Painel do Mestre</h2><p class="sub">Personalize a aparência da call. As alterações são aplicadas para todos os participantes.</p>
+<div class="masterGrid">
+<div class="masterField"><label>Cor principal</label><input id="themePrimary" type="color" value="#e5092f"></div>
+<div class="masterField"><label>Cor secundária</label><input id="themeSecondary" type="color" value="#6d0015"></div>
+<div class="masterField"><label>Fundo da call</label><input id="themeBgColor" type="color" value="#080808"></div>
+<div class="masterField"><label>Imagem de fundo (URL)</label><input id="themeBgUrl" type="text" placeholder="https://.../imagem.jpg"></div>
+</div><div class="themePreview" id="themePreview"></div>
+<div class="themeActions"><button class="applyTheme" onclick="applyMasterTheme()">Aplicar para todos</button><button onclick="saveMasterPreset()">Salvar preset</button><button onclick="clearThemeBackground()">Remover imagem</button></div>
+<div class="presetSaved" id="presetSaved"></div><h3>Presets salvos</h3><div class="presetRow" id="presetList"></div>
+</div></div>
+
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
@@ -198,47 +196,7 @@ let mutedByMaster=false;
 let peer=null, localMic=null, micDeviceId='', connections=new Map(), calls=new Map();
 let screenStream=null, screenCalls=new Map(), remoteAudios=new Map(), analysers=new Map(), voiceTimers=new Map();
 let voiceSensitivity=parseFloat(localStorage.getItem('nevadasVoiceSensitivity')||'0.035');
-let viewerShareQuality=localStorage.getItem('nevadasViewerShareQuality')||'auto';
-const viewerShareProfiles={
- auto:{bitrate:2200000,fps:30,scale:1},
- smooth:{bitrate:700000,fps:20,scale:2},
- balanced:{bitrate:1400000,fps:30,scale:1.5},
- quality:{bitrate:2800000,fps:30,scale:1}
-};
-function openShareQuality(){
- const el=$('shareQualityModal'); if(!el)return;
- $('shareQuality').value=viewerShareQuality; el.classList.add('show');
-}
-function closeShareQuality(){ $('shareQualityModal')?.classList.remove('show'); }
-function applyShareQuality(){
- viewerShareQuality=$('shareQuality').value||'auto';
- localStorage.setItem('nevadasViewerShareQuality',viewerShareQuality);
- closeShareQuality();
- if(role==='player') connections.forEach(c=>{if(c.open)try{c.send({type:'share-quality-request',quality:viewerShareQuality})}catch(e){}});
- toast('Qualidade da transmissão salva');
-}
-function getShareProfile(q){return viewerShareProfiles[q]||viewerShareProfiles.auto;}
-function applyShareQualityToViewer(peerId,quality){
- const call=screenCalls.get(peerId); if(!call)return;
- const profile=getShareProfile(quality);
- const apply=()=>{
-   try{
-     const pc=call.peerConnection;
-     const sender=pc?.getSenders?.().find(x=>x.track&&x.track.kind==='video');
-     if(!sender)return false;
-     const params=sender.getParameters();
-     params.encodings=params.encodings&&params.encodings.length?params.encodings:[{}];
-     params.encodings[0].maxBitrate=profile.bitrate;
-     params.encodings[0].maxFramerate=profile.fps;
-     params.encodings[0].scaleResolutionDownBy=profile.scale;
-     params.degradationPreference='maintain-framerate';
-     sender.setParameters(params).catch(()=>{});
-     return true;
-   }catch(e){return false;}
- };
- if(!apply())setTimeout(apply,250);
-}
-
+let currentTheme={primary:'#e5092f',secondary:'#6d0015',bg:'#080808',bgImage:''};
 
 function $(id){return document.getElementById(id)}
 function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -255,7 +213,6 @@ function backToLogin(){
   $('role').style.display='none';
   $('login').style.display='flex';
   role='';
-  document.querySelectorAll('.masterOnly').forEach(el=>el.classList.remove('showMaster'));
 }
 function chooseRole(selected){
   role=selected;
@@ -264,19 +221,19 @@ function chooseRole(selected){
   $('welcome').textContent=nick;
 
   const isMaster=role==='master';
-  document.querySelectorAll('.masterOnly').forEach(el=>el.classList.toggle('showMaster',isMaster));
   $('homeDescription').textContent=isMaster
     ? 'Como Mestre, você pode criar uma sala e compartilhar o código com os Players.'
     : 'Como Player, coloque o código da sala que o Mestre enviou para você.';
 
   $('createRoomBtn').style.display=isMaster?'block':'none';
   $('joinRoomBtn').style.display=isMaster?'none':'block';
+  $('masterPanelBtn').style.display=isMaster?'block':'none';
+  if(isMaster)loadMasterPresets();
   $('homeError').textContent='';
 }
 function backToRole(){
   $('home').style.display='none';
   $('role').style.display='flex';
-  document.querySelectorAll('.masterOnly').forEach(el=>el.classList.remove('showMaster'));
 }
 $('nick').addEventListener('keydown',e=>{if(e.key==='Enter')enter()});
 
@@ -290,7 +247,7 @@ function joinPrompt(){if(role!=='player')return;
 async function joinRoom(host){
  $('home').style.display='none';$('app').style.display='grid';
  $('roomLabel').textContent='• Sala '+room;$('userLabel').textContent=nick;
- renderMe(); await setupMic();
+ renderMe(); applyThemeLocally(loadMasterTheme()); await setupMic();
  const peerId=host?room:room+'-'+Math.random().toString(36).slice(2,7);
  peer=new Peer(peerId);
  peer.on('open',id=>{
@@ -317,36 +274,20 @@ function setupConnection(c){
  c.on('data',d=>{
    if(d.type==='hello'){
      addParticipant(c.peer,d.nick);
-     // Toda conexão de voz é P2P. O peer com ID menor inicia o envio do microfone,
-     // evitando chamadas duplicadas e permitindo que Players conversem entre si.
-     if(peer && localMic && String(peer.id)<String(c.peer)) initiateMicCall(c.peer);
-     // O Mestre apresenta os participantes atuais ao novo Player e avisa os demais.
-     if(peer && peer.id===room){
-       const list=[];
-       connections.forEach(x=>{if(x.peer!==c.peer)list.push({id:x.peer,nick:x.metadata?.nick||''})});
-       
-       try{c.send({type:'peer-list',list})}catch(e){}
-       connections.forEach(x=>{if(x.peer!==c.peer&&x.open)try{x.send({type:'peer-list',list:[{id:c.peer,nick:d.nick}]})}catch(e){}});
+     // New user tells everyone through host; host also initiates mic call.
+     if(peer && peer.id===room && localMic){
+       const call=peer.call(c.peer,localMic,{metadata:{kind:'mic',nick}});
+       if(call) calls.set(c.peer,call);
      }
    }
-   if(d.type==='chat'){addMessage(d.nick,d.text)}
-   if(d.type==='peer-list' && Array.isArray(d.list)) d.list.forEach(x=>{ if(x.id===peer?.id)return; addParticipant(x.id,x.nick); if(peer && localMic && !connections.has(x.id)) { const pc=peer.connect(x.id,{reliable:true,metadata:{nick}}); setupConnection(pc); } });
+   if(d.type==='theme-update'){applyThemeLocally(d.theme,true)}
+    if(d.type==='chat'){addMessage(d.nick,d.text)}
+   if(d.type==='peer-list' && Array.isArray(d.list))d.list.forEach(x=>addParticipant(x.id,x.nick));
    if(d.type==='share-stop')removeRemoteSharesByOwner(d.nick||'');
-   if(d.type==='share-quality-request' && role==='master') applyShareQualityToViewer(c.peer,d.quality||'auto');
     if(d.type==='master-mute'){mutedByMaster=!!d.muted;if(localMic)localMic.getAudioTracks().forEach(t=>t.enabled=mic&&!mutedByMaster);toast(mutedByMaster?'Você foi mutado pelo Mestre':'Seu microfone foi liberado pelo Mestre');}
     if(d.type==='master-kick'){toast('Você foi removido da call pelo Mestre');setTimeout(()=>leave(),500);}
  });
  c.on('close',()=>removeParticipant(c.peer));
-}
-
-function initiateMicCall(peerId){
-  if(!localMic||!peerId||peerId===peer?.id)return;
-  const existing=calls.get('mic-'+peerId);
-  if(existing)return;
-  try{
-    const call=peer.call(peerId,localMic,{metadata:{kind:'mic',nick}});
-    if(call){calls.set('mic-'+peerId,call);call.on('close',()=>calls.delete('mic-'+peerId));}
-  }catch(e){console.error('Mic call:',e)}
 }
 
 function handleIncomingCall(call){
@@ -359,7 +300,7 @@ function handleIncomingCall(call){
      addRemoteAudio(call.peer,meta.nick||'Participante',stream);
    }
  });
- if(meta.kind==='mic') calls.set('mic-'+call.peer,call); else calls.set(call.peer,call);
+ calls.set(call.peer,call);
 }
 
 function addParticipant(id,name){
@@ -367,20 +308,13 @@ function addParticipant(id,name){
  let tile=$('peer-'+CSS.escape(id));
  if(tile)return;
  tile=document.createElement('div');tile.className='tile';tile.id='peer-'+id;
- tile.innerHTML='<div class="avatar">'+esc((name||'?').slice(0,1).toUpperCase())+'</div><div class="name">'+esc(name||'Participante')+'</div><div class="micDot">🎙️ Microfone</div><div class="voiceWave"><i></i><i></i><i></i><i></i><i></i></div>';
- const vc=document.createElement('div');vc.className='voiceControls';vc.title='Volume deste participante';
- const vb=document.createElement('button');vb.type='button';vb.textContent='🔊 Som';
- const vs=document.createElement('input');vs.type='range';vs.min='0';vs.max='100';vs.value='100';vs.step='1';
- const vv=document.createElement('span');vv.className='voiceVolumeValue';vv.textContent='100%';
- vs.oninput=()=>{const a=remoteAudios.get(id);const pct=Number(vs.value)||0;if(a){a.volume=pct/100;a.muted=pct===0;}vv.textContent=pct+'%';vb.textContent=pct===0?'🔇 Mutado':'🔊 Som'};
- vb.onclick=()=>{const a=remoteAudios.get(id);if(!a)return;a.muted=!a.muted;vb.textContent=a.muted?'🔇 Mutado':'🔊 Som';if(!a.muted&&Number(vs.value)===0){vs.value='100';a.volume=1;vv.textContent='100%'}};
- vc.append(vb,vs,vv);tile.appendChild(vc);
-  if(role==='master'){const mb=document.createElement('div');mb.className='masterMenu';mb.innerHTML='<button class="masterMenuBtn" title="☰ Gerenciar participante">•••</button><div class="memberMenu"><button onclick="masterMute(\''+esc(id)+'\',this)">🔇 Mutar participante</button><button onclick="masterKick(\''+esc(id)+'\')">🚫 Remover da call</button></div>'; const b=mb.querySelector('.masterMenuBtn'); b.onclick=()=>{const m=mb.querySelector('.memberMenu');m.style.display=m.style.display==='block'?'none':'block'}; tile.appendChild(mb);}
+ tile.innerHTML='<div class="avatar">'+esc((name||'?').slice(0,1).toUpperCase())+'</div><div class="name">'+esc(name||'Participante')+'</div><div class="micDot">🎙 MIC</div><div class="voiceWave"><i></i><i></i><i></i><i></i><i></i></div>';
+  if(role==='master'){const mb=document.createElement('div');mb.className='masterMenu';mb.innerHTML='<button class="masterMenuBtn" title="Gerenciar participante">•••</button><div class="memberMenu"><button onclick="masterMute(\''+esc(id)+'\',this)">🔇 🔇 MUTar participante</button><button onclick="masterKick(\''+esc(id)+'\')">Remover da call</button></div>'; const b=mb.querySelector('.masterMenuBtn'); b.onclick=()=>{const m=mb.querySelector('.memberMenu');m.style.display=m.style.display==='block'?'none':'block'}; tile.appendChild(mb);}
  $('stage').appendChild(tile);
 }
 function masterMute(id,btn){
   const c=connections.get(id); if(!c||!c.open)return;
-  const currently=btn.dataset.muted==='1'; btn.dataset.muted=currently?'0':'1'; btn.textContent=currently?'🔇 Mutar participante':'Desmutar participante';
+  const currently=btn.dataset.muted==='1'; btn.dataset.muted=currently?'0':'1'; btn.textContent=currently?'🔇 🔇 MUTar participante':'Desmutar participante';
   c.send({type:'master-mute',muted:!currently});
 }
 function masterKick(id){
@@ -392,7 +326,7 @@ function removeParticipant(id){document.getElementById('peer-'+CSS.escape(id))?.
 function renderMe(){
  $('myTile')?.remove();
  const t=document.createElement('div');t.className='tile';t.id='myTile';
- t.innerHTML='<div class="avatar">'+esc(nick.slice(0,1).toUpperCase())+'</div><div class="name">'+esc(nick)+'</div><div class="micDot" id="myMic">🎙️ Microfone</div><div class="voiceWave" id="myWave"><i></i><i></i><i></i><i></i><i></i></div>';
+ t.innerHTML='<div class="avatar">'+esc(nick.slice(0,1).toUpperCase())+'</div><div class="name">'+esc(nick)+'</div><div class="micDot" id="myMic">🎙 MIC</div><div class="voiceWave" id="myWave"><i></i><i></i><i></i><i></i><i></i></div>';
  $('stage').prepend(t);addMessage('Sistema','Você entrou na sala.');
 }
 
@@ -447,18 +381,18 @@ function replaceOutgoingMic(){
 }
 function toggleMic(){
  mic=!mic;if(localMic)localMic.getAudioTracks().forEach(t=>t.enabled=mic);
- $('micBtn').classList.toggle('active',mic);$('micBtn').textContent=mic?'🎙️ Microfone':'🔇 Mutado';$('myMic').textContent=mic?'🎙️ Microfone':'🔇 Mutado';
+ $('micBtn').classList.toggle('active',mic);$('micBtn').textContent=mic?'🎙 MIC':'🔇 MUT';$('myMic').textContent=mic?'🎙 MIC':'🔇 MUT';
  $('status').textContent=mic?'Microfone ligado':'Microfone mutado';
 }
 function toggleHeadphones(){
- headphones=!headphones;$('headBtn').classList.toggle('active',headphones);$('headBtn').textContent=headphones?'AUDIO':'🔇 Mutado';
+ headphones=!headphones;$('headBtn').classList.toggle('active',headphones);$('headBtn').textContent=headphones?'🔊 AUDIO':'🔇 MUT';
  remoteAudios.forEach(a=>a.muted=!headphones);$('status').textContent=headphones?'Áudio da call ligado':'Áudio da call desligado';
 }
 
 function addRemoteAudio(id,name,stream){
  let a=document.getElementById('audio-'+CSS.escape(id));
  if(!a){a=document.createElement('audio');a.id='audio-'+id;a.autoplay=true;a.playsInline=true;document.body.appendChild(a)}
- a.srcObject=stream;a.volume=1;a.muted=!headphones;remoteAudios.set(id,a); const tile=document.getElementById('peer-'+CSS.escape(id)); const slider=tile?.querySelector('.voiceControls input'); const val=tile?.querySelector('.voiceVolumeValue'); const btn=tile?.querySelector('.voiceControls button'); if(slider){slider.value='100';if(val)val.textContent='100%';if(btn)btn.textContent='🔊 Som'}
+ a.srcObject=stream;a.muted=!headphones;remoteAudios.set(id,a);
  startVoiceMeter(id,stream);
 }
 function removeRemoteAudio(id){const a=document.getElementById('audio-'+CSS.escape(id));if(a)a.remove();remoteAudios.delete(id);if(voiceTimers.has(id))cancelAnimationFrame(voiceTimers.get(id))}
@@ -476,6 +410,20 @@ function startVoiceMeter(id,stream){
  }catch(e){}
 }
 
+function themeKey(){return 'nevadasMasterTheme_'+nick.trim().toLowerCase();}
+function presetKey(){return 'nevadasMasterPresets_'+nick.trim().toLowerCase();}
+function loadMasterTheme(){try{const x=JSON.parse(localStorage.getItem(themeKey())||'null');return x||currentTheme}catch(e){return currentTheme}}
+function applyThemeLocally(theme,animate=false){if(!theme)return;currentTheme={...currentTheme,...theme};document.documentElement.style.setProperty('--red',currentTheme.primary);document.documentElement.style.setProperty('--red2',currentTheme.primary);document.documentElement.style.setProperty('--bg',currentTheme.bg);document.documentElement.style.setProperty('--panel',currentTheme.secondary);document.documentElement.style.setProperty('--panel2',currentTheme.secondary);const bg=$('themeBg');if(bg){bg.style.backgroundImage=currentTheme.bgImage?`url("${String(currentTheme.bgImage).replace(/"/g,'%22')}")`:'none';bg.style.opacity=currentTheme.bgImage?'0.38':'0'};document.body.style.background=`radial-gradient(circle at 50% -10%, ${currentTheme.secondary} 0, ${currentTheme.bg} 55%)`;if(animate){const f=$('themeFade');f.classList.remove('run');void f.offsetWidth;f.classList.add('run')}}
+function openMasterPanel(){if(role!=='master')return;loadMasterPresets();const t=loadMasterTheme();$('themePrimary').value=t.primary;$('themeSecondary').value=t.secondary;$('themeBgColor').value=t.bg;$('themeBgUrl').value=t.bgImage||'';updateThemePreview();$('masterPanel').classList.add('open')}
+function closeMasterPanel(){$('masterPanel').classList.remove('open')}
+function updateThemePreview(){const p=$('themePreview');if(!p)return;const a=$('themePrimary').value,b=$('themeSecondary').value,c=$('themeBgColor').value,u=$('themeBgUrl').value.trim();p.style.background=u?`linear-gradient(${a}33,${b}55),url("${u.replace(/"/g,'%22')}") center/cover`:`linear-gradient(135deg,${c},${b})`}
+['themePrimary','themeSecondary','themeBgColor','themeBgUrl'].forEach(id=>document.addEventListener('input',e=>{if(e.target.id===id)updateThemePreview()}));
+function getEditorTheme(){return {primary:$('themePrimary').value,secondary:$('themeSecondary').value,bg:$('themeBgColor').value,bgImage:$('themeBgUrl').value.trim()}}
+function applyMasterTheme(){if(role!=='master')return;const t=getEditorTheme();localStorage.setItem(themeKey(),JSON.stringify(t));applyThemeLocally(t,true);connections.forEach(c=>{if(c.open)try{c.send({type:'theme-update',theme:t})}catch(e){}});toast('Tema aplicado para todos');}
+function saveMasterPreset(){if(role!=='master')return;const name=prompt('Nome do preset:');if(!name?.trim())return;const list=JSON.parse(localStorage.getItem(presetKey())||'[]');list.push({name:name.trim(),theme:getEditorTheme()});localStorage.setItem(presetKey(),JSON.stringify(list));loadMasterPresets();$('presetSaved').textContent='Preset salvo no nickname '+nick+'.'}
+function loadMasterPresets(){const box=$('presetList');if(!box)return;const list=JSON.parse(localStorage.getItem(presetKey())||'[]');box.innerHTML='';list.forEach((p,i)=>{const b=document.createElement('button');b.className='preset';b.textContent=p.name;b.onclick=()=>{const t=p.theme;$('themePrimary').value=t.primary;$('themeSecondary').value=t.secondary;$('themeBgColor').value=t.bg;$('themeBgUrl').value=t.bgImage||'';updateThemePreview();applyMasterTheme()};box.appendChild(b)});if(!list.length)box.innerHTML='<span style="color:#777;font-size:12px">Nenhum preset salvo.</span>'}
+function clearThemeBackground(){if(role!=='master')return;$('themeBgUrl').value='';updateThemePreview();applyMasterTheme()}
+
 function sendMessage(e){e.preventDefault();const i=$('chatInput'),t=i.value.trim();if(!t)return;addMessage(nick,t);connections.forEach(c=>{if(c.open)c.send({type:'chat',nick,text:t})});i.value=''}
 function addMessage(user,text){const d=document.createElement('div');d.className='msg';d.innerHTML='<b>'+esc(user)+'</b><p>'+esc(text)+'</p>';$('messages').appendChild(d);$('messages').scrollTop=99999}
 function toggleChat(){const c=document.querySelector('.chat');c.style.display=c.style.display==='none'?'flex':'none'}
@@ -489,70 +437,42 @@ async function shareScreen(type){
   shareSession++;
   const currentShareSession=shareSession;
   const cursor=document.getElementById('cursorMode')?.value||'always';
-  const audioEnabled=document.getElementById('shareAudioEnabled')?.checked!==false;
 
-  // These are browser/OS hints that make the picker behave as closely as
-  // possible to Discord's application/window/screen sharing flow.
-  const displaySurface = type==='window' ? 'window' : type==='browser' ? 'browser' : 'monitor';
+  // No aplicativo desktop, o próprio NEVADAS/Electron abre o seletor de telas/janelas.
+  // O Chrome/Google não fornece o seletor nesse modo.
+  if(window.nevadasDesktop?.isApp){
+    const mode = type==='screen' ? 'screen' : (type==='window' ? 'window' : 'all');
+    await window.nevadasDesktop.openPicker(mode);
+  }
+
+  // Solicita o áudio da fonte compartilhada e pede ao Chromium para excluir
+  // o áudio próprio do aplicativo quando esse recurso estiver disponível.
   const opts={
-    video:{
-      displaySurface,
-      frameRate:{ideal:30,max:60},
-      cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always',
-      width:{ideal:1920},
-      height:{ideal:1080}
-    },
-    audio:audioEnabled ? {
-      suppressLocalAudioPlayback:true,
-      restrictOwnAudio:true
-    } : false,
-    selfBrowserSurface:'exclude',
-    surfaceSwitching:'include',
-    systemAudio:audioEnabled?'include':'exclude',
-    windowAudio:audioEnabled?'system':'exclude',
-    monitorTypeSurfaces:'include',
-    preferCurrentTab:false
+    video:{frameRate:{ideal:30,max:60},cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always'},
+    audio:{restrictOwnAudio:true}
   };
-
   screenStream=await navigator.mediaDevices.getDisplayMedia(opts);
-  closeShare();
-  renderLocalShare();
-  $('shareActive').style.display='block';
 
-  const hasAudio=screenStream.getAudioTracks().length>0;
-  $('status').textContent=hasAudio?'Transmitindo vídeo + 🔊 áudio da fonte':'Transmitindo vídeo';
+  closeShare();renderLocalShare();$('shareActive').style.display='block';
+  $('status').textContent='Transmitindo vídeo e áudio da fonte escolhida';
   const v=screenStream.getVideoTracks()[0];
-  try{v.contentHint='motion'}catch(e){}
   v.addEventListener('ended',stopShare);
-
   connections.forEach(c=>{
    if(!c.open)return;
    const previous=screenCalls.get(c.peer);
    if(previous){try{previous.close()}catch(e){}}
-   const call=peer.call(c.peer,screenStream,{
-     metadata:{
-       kind:'screen',
-       nick,
-       shareSession:currentShareSession,
-       shareId:currentShareSession+'-'+Date.now()
-     }
-   });
+   const call=peer.call(c.peer,screenStream,{metadata:{kind:'screen',nick,shareSession:currentShareSession,shareId:currentShareSession+'-'+Date.now()}});
    screenCalls.set(c.peer,call);
-   applyShareQualityToViewer(c.peer,'auto');
   });
-
-  toast(hasAudio?'🖥️ Compartilhamento iniciado • 🔊 áudio ativo':'🖥️ Compartilhamento iniciado • sem áudio');
- }catch(e){
-   console.error('Screen share:',e);
-   toast(e.name==='NotAllowedError'?'Compartilhamento cancelado':'Não foi possível compartilhar');
- }
+  toast('Compartilhamento iniciado');
+ }catch(e){console.error(e);toast(e.name==='NotAllowedError'?'Compartilhamento cancelado':'Não foi possível compartilhar')}
 }
 function renderLocalShare(){
  $('shareTile')?.remove();const t=document.createElement('div');t.className='tile sharing';t.id='shareTile';
  const v=document.createElement('video');v.autoplay=true;v.muted=true;v.playsInline=true;v.srcObject=screenStream;v.className='sharePreview';v.style.display='block';t.appendChild(v);
  const n=document.createElement('div');n.className='name';n.textContent=nick+' • compartilhando';t.appendChild(n);
- const full=document.createElement('button');full.className='shareFullBtn';full.textContent='⛶ Tela cheia';full.onclick=()=>toggleShareFullscreen(t,full);t.appendChild(full);
-  const stop=document.createElement('button');stop.className='stopShare';stop.textContent='⏹️ Parar compartilhamento';stop.style.position='absolute';stop.style.right='14px';stop.style.bottom='14px';stop.style.width='auto';stop.onclick=stopShare;t.appendChild(stop);
+ const full=document.createElement('button');full.className='shareFullBtn';full.textContent='TELA CHEIA Tela cheia';full.onclick=()=>toggleShareFullscreen(t,full);t.appendChild(full);
+  const stop=document.createElement('button');stop.className='stopShare';stop.textContent='⏹ Parar compartilhamento';stop.style.position='absolute';stop.style.right='14px';stop.style.bottom='14px';stop.style.width='auto';stop.onclick=stopShare;t.appendChild(stop);
  $('stage').appendChild(t)
 }
 let shareSession=0;
@@ -586,7 +506,7 @@ function addRemoteShare(id,name,stream,sessionId){
 
   const full=document.createElement('button');
   full.className='shareFullBtn';
-  full.textContent='⛶ Tela cheia';
+  full.textContent='TELA CHEIA Tela cheia';
   full.onclick=()=>toggleShareFullscreen(t,full);
   t.appendChild(full);
 
@@ -597,8 +517,8 @@ function addRemoteShare(id,name,stream,sessionId){
   const mute=document.createElement('button');
   mute.type='button';
   mute.className='shareAudioBtn';
-  mute.textContent='🔊 Som';
-  mute.title='Mutar áudio do compartilhamento';
+  mute.textContent='SOM';
+  mute.title='🔇 🔇 MUTar áudio do compartilhamento';
 
   const slider=document.createElement('input');
   slider.type='range';
@@ -617,13 +537,13 @@ function addRemoteShare(id,name,stream,sessionId){
     const pct=Math.max(0,Math.min(100,Number(slider.value)||0));
     v.volume=pct/100;
     if(pct>0)v.muted=false;
-    mute.textContent=(v.muted||pct===0)?'🔇 Mutado':'🔊 Som';
+    mute.textContent=(v.muted||pct===0)?'🔇 MUT':'SOM';
     value.textContent=pct+'%';
   };
 
   mute.onclick=()=>{
     v.muted=!v.muted;
-    mute.textContent=v.muted?'🔇 Mutado':'🔊 Som';
+    mute.textContent=v.muted?'🔇 MUT':'SOM';
     if(!v.muted && Number(slider.value)===0){
       slider.value='100';
       v.volume=1;
@@ -696,11 +616,11 @@ async function toggleShareFullscreen(tile,button){
 
     const exit=document.createElement('button');
     exit.className='shareExitFull';
-    exit.textContent='✕ Sair da tela cheia';
+    exit.textContent='FECHAR Sair da tela cheia';
     exit.onclick=()=>toggleShareFullscreen(tile,button);
     document.body.appendChild(exit);
 
-    if(button)button.textContent='✕ Sair da tela cheia';
+    if(button)button.textContent='FECHAR Sair da tela cheia';
   }else{
     tile.classList.remove('sharingFullscreen');
 
@@ -708,7 +628,7 @@ async function toggleShareFullscreen(tile,button){
       if(document.fullscreenElement) await document.exitFullscreen();
     }catch(e){}
 
-    if(button)button.textContent='⛶ Tela cheia';
+    if(button)button.textContent='TELA CHEIA Tela cheia';
   }
 }
 
@@ -755,7 +675,7 @@ document.addEventListener('fullscreenchange',()=>{
     if(document.fullscreenElement!==tile){
       tile.classList.remove('sharingFullscreen');
       const b=tile.querySelector('.shareFullBtn');
-      if(b)b.textContent='⛶ Tela cheia';
+      if(b)b.textContent='TELA CHEIA Tela cheia';
       document.querySelector('.shareExitFull')?.remove();
     }
   });
