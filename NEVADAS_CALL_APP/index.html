@@ -56,7 +56,7 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
 .tile.speaking .voiceWave{opacity:1}
 .tile.speaking .voiceWave i:nth-child(1){height:9px}.tile.speaking .voiceWave i:nth-child(2){height:17px}.tile.speaking .voiceWave i:nth-child(3){height:25px}.tile.speaking .voiceWave i:nth-child(4){height:14px}.tile.speaking .voiceWave i:nth-child(5){height:20px}
 .shareFullBtn{position:absolute;right:14px;top:14px;z-index:3;background:#111c;color:#fff;border:1px solid #444;border-radius:10px;padding:9px 12px;font-weight:800}
-.sharingFullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;z-index:999!important;margin:0!important;border-radius:0!important;background:#000!important}
+.sharingFullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;min-height:100vh!important;z-index:999!important;margin:0!important;border-radius:0!important;background:#000!important}
 .sharingFullscreen .sharePreview{width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;border:0!important;border-radius:0!important}
 .shareAudioControls{position:absolute;right:14px;bottom:14px;z-index:4;display:flex;align-items:center;gap:8px;background:#111d;border:1px solid #444;border-radius:12px;padding:8px 10px;backdrop-filter:blur(6px)}
 .shareAudioBtn{border:1px solid #555;background:#19191c;color:#fff;border-radius:9px;padding:7px 9px;font-weight:800;cursor:pointer}
@@ -71,163 +71,21 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
 .roleIcon{font-size:28px;margin-bottom:10px;font-weight:900;color:var(--red);width:42px;height:42px;border:1px solid #4a1a22;border-radius:10px;display:grid;place-items:center}.masterMenu{position:absolute;right:12px;top:12px;z-index:4}.masterMenuBtn{background:#111;color:#fff;border:1px solid #444;border-radius:9px;padding:8px 11px;font-weight:900}.memberMenu{position:absolute;right:12px;top:48px;background:#111;border:1px solid #444;border-radius:10px;padding:6px;display:none;z-index:8;min-width:150px}.memberMenu button{display:block;width:100%;background:none;border:0;color:#fff;text-align:left;padding:9px;border-radius:7px}.memberMenu button:hover{background:#25252a}.roleTitle{font-size:18px;font-weight:800;color:#fff}.roleDesc{font-size:12px;color:#999;line-height:1.5;margin-top:6px}
 .backRole{margin-top:16px;background:none;border:0;color:#999;cursor:pointer}
 @media(max-width:620px){.roleCards{grid-template-columns:1fr}}
-\n
-/* ===== MOBILE UI ===== */
-@media (max-width: 800px){
-  html,body{width:100%;min-width:0;overflow:hidden}
-  .screen{min-height:100dvh;padding:14px}
-  .card{width:min(440px,calc(100vw - 28px));padding:24px 20px;border-radius:20px}
-  h1{font-size:28px;margin:24px 0 8px}
-  .roleCards{gap:10px}
-  .roleCard{padding:17px}
-  .roleIcon{font-size:23px;width:38px;height:38px}
-  .roleTitle{font-size:16px}
-  .roleDesc{font-size:11px}
-
-  .app{
-    height:100dvh;
-    min-height:0;
-    grid-template-rows:54px 1fr auto;
-  }
-  .top{
-    min-width:0;
-    height:54px;
-    padding:0 10px;
-    gap:8px;
-  }
-  .room{min-width:0;gap:7px}
-  .room strong{font-size:13px;white-space:nowrap}
-  .roomCode{font-size:10px;white-space:nowrap}
-  .copy{padding:7px 8px;font-size:11px;white-space:nowrap}
-  #userLabel{display:none}
-
-  .layout{min-height:0;display:block;position:relative}
-  .stage{
-    width:100%;
-    height:100%;
-    min-height:0;
-    padding:10px;
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
-    align-content:start;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-  }
-  .tile{
-    min-height:135px;
-    border-radius:13px;
-  }
-  .tile.sharing{
-    grid-column:1/-1;
-    min-height:210px;
-  }
-  .avatar{width:60px;height:60px;font-size:23px}
-  .name{
-    left:8px;bottom:7px;
-    padding:5px 7px;
-    font-size:11px;
-    max-width:calc(100% - 16px);
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .micDot{right:8px;bottom:8px;font-size:10px}
-  .voiceControls{
-    right:6px;top:6px;
-    max-width:calc(100% - 12px);
-    padding:4px 5px;
-    gap:4px;
-  }
-  .voiceControls button{font-size:9px;padding:3px 5px}
-  .voiceControls input{width:48px}
-  .voiceVolumeValue{font-size:9px;min-width:25px}
-  .masterMenu{right:6px;top:6px}
-  .masterMenuBtn{padding:6px 8px;font-size:12px}
-  .memberMenu{right:0;top:39px;min-width:145px}
-
-  .chat{
-    display:none;
-    position:absolute;
-    z-index:20;
-    inset:8px;
-    border:1px solid var(--line);
-    border-radius:15px;
-    box-shadow:0 20px 60px #000;
-    overflow:hidden;
-  }
-  .chatHead{padding:13px}
-  .messages{padding:12px}
-  .chatForm{padding:9px}
-  .send{width:43px}
-
-  .controls{
-    min-height:68px;
-    padding:8px 8px calc(8px + env(safe-area-inset-bottom));
-    gap:7px;
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    align-content:center;
-  }
-  .ctrl{
-    width:100%;
-    min-width:0;
-    height:48px;
-    padding:0 5px;
-    border-radius:12px;
-    font-size:11px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .status{display:none}
-
-  .modal{
-    align-items:flex-end;
-    padding:8px;
-  }
-  .modalBox{
-    width:100%;
-    max-width:none;
-    max-height:calc(100dvh - 16px);
-    overflow:auto;
-    padding:18px;
-    border-radius:18px;
-    margin-bottom:env(safe-area-inset-bottom);
-  }
-  .modalBox h2{font-size:21px;margin-top:4px}
-  .modalBox .sub{font-size:12px}
-  .option{padding:13px 12px}
-  .settingsRow{gap:7px}
-  .settingsRow span{font-size:12px;min-width:0!important}
-  .settingsRow select{min-width:0;font-size:12px}
-  .settingsRow input[type=range]{min-width:0}
-  .shareVolume{width:90px}
-  .shareAudioControls{
-    right:7px;bottom:7px;
-    gap:5px;
-    padding:6px 7px;
-    border-radius:10px;
-  }
-  .shareAudioBtn{padding:6px 7px;font-size:11px}
-  .shareVolumeValue{font-size:10px;min-width:30px}
-  .shareFullBtn{right:7px;top:7px;padding:7px 9px;font-size:11px}
-  .stopShare{padding:9px;font-size:12px}
-}
-
-/* Very small phones */
-@media (max-width:430px){
-  .top{padding:0 7px}
-  .room strong{font-size:12px}
-  .roomCode{display:none}
-  .copy{font-size:10px;padding:7px}
-  .stage{padding:8px;gap:7px}
-  .tile{min-height:125px}
-  .tile.sharing{min-height:195px}
-  .controls{grid-template-columns:repeat(3,minmax(0,1fr));min-height:64px}
-  .ctrl{height:44px;font-size:10px}
-  .roleCards{grid-template-columns:1fr}
-}
+.masterOnly{display:none}.masterOnly.showMaster{display:inline-flex}.cameraPreview{width:100%;height:100%;object-fit:cover;border-radius:12px;display:block}\n
+/* Painel de áudio do PC */
+.pcAudioModal .modalBox{width:min(620px,96vw);max-height:82vh;overflow:auto}
+.pcAudioHeader{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pcAudioList{display:flex;flex-direction:column;gap:9px;margin-top:15px}
+.pcAudioApp{display:flex;align-items:center;gap:12px;background:#0c0c0f;border:1px solid #29292f;border-radius:13px;padding:12px}
+.pcAudioIcon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:#1a1a1f;border:1px solid #333;font-size:18px}
+.pcAudioInfo{flex:1;min-width:0}.pcAudioName{font-weight:800}.pcAudioSub{font-size:11px;color:#777;margin-top:3px}
+.pcAudioActions{display:flex;align-items:center;gap:8px}
+.pcAudioMute{background:#1a1a1e;border:1px solid #444;color:#fff;border-radius:9px;padding:8px 10px;font-weight:800}
+.pcAudioMute.muted{background:#7d0019;border-color:#c51439}
+.pcAudioSlider{width:105px;accent-color:#e3133b}
+.pcAudioPct{width:38px;text-align:right;color:#aaa;font-size:11px}
+.pcAudioNote{margin-top:14px;background:#0b0b0d;border:1px solid #2b2b30;border-radius:12px;padding:12px;color:#aaa;font-size:12px;line-height:1.45}
+.pcAudioNative{display:none}
 
 </style>
 </head>
@@ -297,30 +155,74 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
     <span class="status" id="status">Pronto</span>
     <button class="ctrl active" id="micBtn" onclick="toggleMic()" title="Microfone">🎙️ Microfone</button>
     <button class="ctrl active" id="headBtn" onclick="toggleHeadphones()" title="Fones">🔊 Áudio</button>
-    <button class="ctrl" onclick="openShare()" title="Compartilhar tela">🖥️ Tela</button><button class="ctrl" onclick="openSettings()" title="Configurações">⚙️ Configurações</button>
+    <button class="ctrl" onclick="openShare()" title="Compartilhar tela">🖥️ Tela</button><button class="ctrl" onclick="openPCAudio()" title="Áudio dos aplicativos">🔊 Áudio do PC</button><button class="ctrl masterOnly" id="masterCameraBtn" onclick="openCamera()" title="Câmera do Mestre">📷 Câmera</button>
+<button class="ctrl" onclick="openSettings()" title="Configurações">⚙️ Configurações</button>
     <button class="ctrl" id="shareQualityBtn" onclick="openShareQuality()" title="Qualidade da transmissão">🖥️ Qualidade</button>
     <button class="ctrl" onclick="toggleChat()" title="Mostrar/esconder chat">💬 Chat</button>
     <button class="ctrl danger" onclick="leave()">🚪 Sair</button>
   </footer>
 </section>
 
+<div class="modal" id="cameraModal">
+  <div class="modalBox">
+    <button class="close" onclick="closeCamera()">×</button>
+    <h2>📷 Câmera</h2>
+    <p class="sub">Escolha a câmera que será transmitida. A câmera virtual do OBS também aparecerá se estiver instalada.</p>
+    <div class="settingsRow"><span style="min-width:150px">📷 Câmera</span><select id="cameraDevice"></select></div>
+    <div class="settingsRow"><span style="min-width:150px">🔊 Áudio da câmera</span><select id="cameraAudioDevice"></select></div>
+    <div class="settingsRow"><span style="min-width:150px">🖱️ Cursor</span><select id="cameraCursorMode"><option value="always">Mostrar cursor</option><option value="never">Ocultar cursor</option></select></div>
+    <div style="background:#0b0b0d;border:1px solid #2b2b30;border-radius:12px;padding:11px 12px;color:#aaa;font-size:12px;line-height:1.4;margin-bottom:12px">
+      🎥 O vídeo usa a câmera escolhida e 🔊 o áudio usa a fonte selecionada. Se o OBS estiver enviando áudio por um dispositivo virtual, escolha esse dispositivo aqui.
+    </div>
+    <button class="option" onclick="startCamera()">📷 Abrir câmera<small>Começa a transmitir a câmera selecionada para os Players.</small></button>
+    <button class="option" id="stopCameraBtn" onclick="stopCamera()" style="display:none">⏹️ Parar câmera</button>
+  </div>
+</div>
+
 <div class="modal" id="shareModal">
   <div class="modalBox">
     <button class="close" onclick="closeShare()">×</button>
     <h2>Compartilhar tela</h2>
-    <p class="sub">Escolha a tela, janela ou aba no seletor do navegador. O áudio depende da fonte e do navegador.</p>
+    <p class="sub">Escolha a fonte no seletor seguro do navegador e controle se o cursor será transmitido.</p>
 <div class="settingsRow"><span style="min-width:150px">🖱️ Cursor</span><select id="cursorMode"><option value="always">Mostrar cursor</option><option value="never">Ocultar cursor</option><option value="motion">Mostrar ao mover</option></select></div>
-    <label style="display:flex;align-items:center;gap:10px;background:#0b0b0d;border:1px solid #2b2b30;border-radius:10px;padding:10px 12px;margin-bottom:10px;cursor:pointer">
-      <input id="shareAudioEnabled" type="checkbox" checked style="width:16px;height:16px">
-      <span>🔊 <b>Compartilhar áudio</b><small style="display:block;color:#888;margin-top:3px">O áudio disponível para a fonte escolhida será enviado junto com a transmissão.</small></span>
-    </label>
+    <div class="settingsRow"><span style="min-width:150px">🔊 Áudio</span><select id="shareAudioMode"><option value="auto">Automático — áudio da fonte</option><option value="include">Incluir áudio do sistema</option><option value="none">Sem áudio</option></select></div>
     <div style="background:#0b0b0d;border:1px solid #2b2b30;border-radius:12px;padding:11px 12px;color:#aaa;font-size:12px;line-height:1.4;margin-bottom:12px">
-      🎬 <b style="color:#ddd">Compatível com Chrome/Edge:</b> escolha uma janela, tela ou aba. Se o áudio não estiver disponível, a transmissão continua somente com vídeo.
+      🔊 <b style="color:#ddd">Áudio:</b> o navegador/Windows abre o seletor oficial. O site não consegue marcar ou desmarcar individualmente os aplicativos da lista “Não compartilhar som dos seguintes apps”; isso é controlado pelo navegador/Windows. Quando essa lista aparecer, deixe marcados os apps cujo som não deve sair na transmissão.
+      <br><br>
+      🖱️ <b style="color:#ddd">Cursor oculto:</b> “Ocultar cursor” envia <code>cursor: "never"</code> para a captura. Se o navegador/Windows respeitar essa opção, o mouse não aparece no vídeo transmitido.
     </div>
-    <button class="option" onclick="shareScreen('window')">🪟 Janela<small>Escolha um aplicativo/janela para transmitir.</small></button>
-    <button class="option" onclick="shareScreen('screen')">🖥️ Tela inteira<small>Escolha um monitor para transmitir.</small></button>
-    <button class="option" onclick="shareScreen('browser')">🌐 Aba do navegador<small>Escolha uma aba e, quando disponível, o áudio dela.</small></button>
-<div id="shareActive" style="display:none"><button class="stopShare" onclick="stopShare()">⏹️ Parar compartilhamento</button></div>
+    <button class="option" onclick="shareScreen('window')">🪟 Janela<small>Transmite somente a janela escolhida.</small></button>
+    <button class="option" onclick="shareScreen('screen')">🖥️ Tela inteira<small>Transmite a tela inteira escolhida.</small></button>
+    <button class="option" onclick="shareScreen('browser')">ABA Aba do navegador<small>Transmite somente a aba escolhida.</small></button>
+<div style="margin-top:12px;color:#777;font-size:11px;line-height:1.45">
+   💡 <b style="color:#aaa">Importante:</b> para mutar <b>cada aplicativo do Windows</b> individualmente, use o botão <b>🔊 Áudio do PC</b>. No navegador ele controla somente as fontes acessíveis à página; no EXE nativo ele deve ser conectado ao mixer de sessões de áudio do Windows.
+ </div>
+ <div id="shareActive" style="display:none"><button class="stopShare" onclick="stopShare()">⏹️ Parar compartilhamento</button></div>
+  </div>
+</div>
+
+
+<div class="modal pcAudioModal" id="pcAudioModal">
+  <div class="modalBox">
+    <button class="close" onclick="closePCAudio()">×</button>
+    <div class="pcAudioHeader">
+      <div>
+        <h2 style="margin-bottom:5px">🔊 Áudio dos aplicativos</h2>
+        <p class="sub" style="margin-bottom:0">Controle o áudio que o NEVADAS CALL usa para evitar eco.</p>
+      </div>
+    </div>
+
+    <div class="pcAudioList" id="pcAudioList"></div>
+
+    <div class="pcAudioNote">
+      <b style="color:#ddd">Importante no navegador:</b> uma página HTML não tem permissão para listar e mutar
+      individualmente todos os aplicativos do Windows. Por isso, esta aba controla as fontes de áudio que o
+      NEVADAS CALL realmente consegue acessar. No <b>EXE</b> do NEVADAS CALL, esta mesma tela pode ser ligada
+      ao mixer de áudio do Windows para mostrar os aplicativos abertos e mutar cada sessão, inclusive o próprio
+      NEVADAS CALL.
+    </div>
+
+    <button class="secondary" onclick="refreshPCAudio()" style="margin-top:12px">↻ Atualizar fontes</button>
   </div>
 </div>
 
@@ -354,15 +256,136 @@ input:focus{border-color:var(--red);box-shadow:0 0 0 3px #e5092f18}
 let nick='',room='',mic=true,headphones=true,role='';
 let mutedByMaster=false;
 let peer=null, localMic=null, micDeviceId='', connections=new Map(), calls=new Map();
-let screenStream=null, screenCalls=new Map(), remoteAudios=new Map(), analysers=new Map(), voiceTimers=new Map();
+let screenStream=null, screenCalls=new Map(), cameraStream=null, cameraCalls=new Map(), remoteCameras=new Map(), remoteAudios=new Map(), analysers=new Map(), voiceTimers=new Map();
 let voiceSensitivity=parseFloat(localStorage.getItem('nevadasVoiceSensitivity')||'0.035');
 let viewerShareQuality=localStorage.getItem('nevadasViewerShareQuality')||'auto';
+let shareAudioMode=localStorage.getItem('nevadasShareAudioMode')||'auto';
 const viewerShareProfiles={
  auto:{bitrate:2200000,fps:30,scale:1},
  smooth:{bitrate:700000,fps:20,scale:2},
  balanced:{bitrate:1400000,fps:30,scale:1.5},
  quality:{bitrate:2800000,fps:30,scale:1}
 };
+
+/*
+ * Mixer de áudio do NEVADAS CALL.
+ * No navegador, só podemos controlar as fontes que pertencem à página/captura.
+ * A ponte nativa do EXE pode substituir refreshPCAudio()/setPCAudioState()
+ * por chamadas ao Windows Core Audio para cada Audio Session.
+ */
+const pcAudioState = new Map([
+  ['nevadas', {name:'NEVADAS CALL', sub:'Áudio da própria call', icon:'🎙️', volume:100, muted:false, nativeKey:'nevadas-call'}],
+  ['share',   {name:'Compartilhamento de tela', sub:'Áudio capturado da fonte', icon:'🖥️', volume:100, muted:false, nativeKey:'share-capture'}]
+]);
+
+function openPCAudio(){
+  refreshPCAudio();
+  $('pcAudioModal').style.display='flex';
+}
+function closePCAudio(){ $('pcAudioModal').style.display='none'; }
+
+function renderPCAudio(){
+  const list=$('pcAudioList'); if(!list)return;
+  list.innerHTML='';
+  pcAudioState.forEach((app,key)=>{
+    const row=document.createElement('div');
+    row.className='pcAudioApp';
+
+    const icon=document.createElement('div');
+    icon.className='pcAudioIcon';
+    icon.textContent=app.icon;
+
+    const info=document.createElement('div');
+    info.className='pcAudioInfo';
+    const name=document.createElement('div');
+    name.className='pcAudioName';
+    name.textContent=app.name;
+    const sub=document.createElement('div');
+    sub.className='pcAudioSub';
+    sub.textContent=app.sub;
+    info.append(name,sub);
+
+    const actions=document.createElement('div');
+    actions.className='pcAudioActions';
+
+    const mute=document.createElement('button');
+    mute.className='pcAudioMute'+(app.muted?' muted':'');
+    mute.textContent=app.muted?'🔇 Mutado':'🔊 Som';
+    mute.onclick=()=>setPCAudioState(key,{muted:!app.muted});
+
+    const slider=document.createElement('input');
+    slider.className='pcAudioSlider';
+    slider.type='range'; slider.min='0'; slider.max='100'; slider.step='1';
+    slider.value=app.muted?0:app.volume;
+    slider.oninput=()=>setPCAudioState(key,{volume:Number(slider.value),muted:Number(slider.value)===0});
+
+    const pct=document.createElement('span');
+    pct.className='pcAudioPct';
+    pct.textContent=(app.muted?0:app.volume)+'%';
+
+    actions.append(mute,slider,pct);
+    row.append(icon,info,actions);
+    list.appendChild(row);
+  });
+}
+
+function setPCAudioState(key,patch){
+  const app=pcAudioState.get(key); if(!app)return;
+  Object.assign(app,patch);
+  if(app.volume<=0)app.muted=true;
+  if(app.volume>0 && patch.volume!==undefined)app.muted=false;
+
+  // Aplicação local quando a fonte pertence ao NEVADAS CALL.
+  if(key==='nevadas'){
+    headphones=!app.muted;
+    remoteAudios.forEach(a=>a.muted=!headphones);
+    $('headBtn')?.classList.toggle('active',headphones);
+    if($('headBtn'))$('headBtn').textContent=headphones?'🔊 Áudio':'🔇 Mutado';
+  }
+  if(key==='share'){
+    document.querySelectorAll('#shareTile video').forEach(v=>{
+      v.muted=app.muted; v.volume=Math.max(0,Math.min(1,app.volume/100));
+    });
+  }
+
+  // Ponte para o futuro EXE nativo.
+  // Se o wrapper Electron expuser window.nevadasAudio.setSession(...),
+  // a sessão real do Windows será mutada/ajustada aqui.
+  try{
+    window.nevadasAudio?.setSession?.(app.nativeKey, {
+      muted:app.muted,
+      volume:app.volume/100
+    });
+  }catch(e){}
+
+  renderPCAudio();
+  toast(app.muted ? app.name+' mutado' : app.name+' • '+app.volume+'%');
+}
+
+function refreshPCAudio(){
+  renderPCAudio();
+
+  // Se o EXE nativo estiver disponível, ele pode devolver todas as
+  // Audio Sessions do Windows. O HTML passa a desenhá-las automaticamente.
+  try{
+    const nativeApps=window.nevadasAudio?.getSessions?.();
+    if(Array.isArray(nativeApps)){
+      nativeApps.forEach((x,i)=>{
+        if(!x || !x.id)return;
+        pcAudioState.set('native-'+x.id,{
+          name:x.name||'Aplicativo',
+          sub:x.pid ? 'PID '+x.pid : 'Sessão de áudio do Windows',
+          icon:x.icon||'🔊',
+          volume:Math.round((x.volume ?? 1)*100),
+          muted:!!x.muted,
+          nativeKey:x.id
+        });
+      });
+    }
+  }catch(e){}
+  renderPCAudio();
+}
+
 function openShareQuality(){
  const el=$('shareQualityModal'); if(!el)return;
  $('shareQuality').value=viewerShareQuality; el.classList.add('show');
@@ -490,6 +513,7 @@ function setupConnection(c){
    if(d.type==='chat'){addMessage(d.nick,d.text)}
    if(d.type==='peer-list' && Array.isArray(d.list)) d.list.forEach(x=>{ if(x.id===peer?.id)return; addParticipant(x.id,x.nick); if(peer && localMic && !connections.has(x.id)) { const pc=peer.connect(x.id,{reliable:true,metadata:{nick}}); setupConnection(pc); } });
    if(d.type==='share-stop')removeRemoteSharesByOwner(d.nick||'');
+   if(d.type==='camera-stop'){ $('camera-'+CSS.escape(c.peer))?.remove(); remoteCameras.delete(c.peer); }
    if(d.type==='share-quality-request' && role==='master') applyShareQualityToViewer(c.peer,d.quality||'auto');
     if(d.type==='master-mute'){mutedByMaster=!!d.muted;if(localMic)localMic.getAudioTracks().forEach(t=>t.enabled=mic&&!mutedByMaster);toast(mutedByMaster?'Você foi mutado pelo Mestre':'Seu microfone foi liberado pelo Mestre');}
     if(d.type==='master-kick'){toast('Você foi removido da call pelo Mestre');setTimeout(()=>leave(),500);}
@@ -513,6 +537,8 @@ function handleIncomingCall(call){
  call.on('stream',stream=>{
    if(meta.kind==='screen'){
      addRemoteShare(call.peer,meta.nick||'Participante',stream,meta.shareSession);
+   }else if(meta.kind==='camera'){
+     addRemoteCamera(call.peer,meta.nick||'Mestre',stream);
    }else{
      addRemoteAudio(call.peer,meta.nick||'Participante',stream);
    }
@@ -636,189 +662,232 @@ function startVoiceMeter(id,stream){
 
 function sendMessage(e){e.preventDefault();const i=$('chatInput'),t=i.value.trim();if(!t)return;addMessage(nick,t);connections.forEach(c=>{if(c.open)c.send({type:'chat',nick,text:t})});i.value=''}
 function addMessage(user,text){const d=document.createElement('div');d.className='msg';d.innerHTML='<b>'+esc(user)+'</b><p>'+esc(text)+'</p>';$('messages').appendChild(d);$('messages').scrollTop=99999}
-function toggleChat(){
-  const c=document.querySelector('.chat');
-  const mobile=window.matchMedia('(max-width:800px)').matches;
-  if(mobile){
-    c.style.display=c.style.display==='flex'?'none':'flex';
-  }else{
-    c.style.display=c.style.display==='none'?'flex':'none';
-  }
-}
+function toggleChat(){const c=document.querySelector('.chat');c.style.display=c.style.display==='none'?'flex':'none'}
 function copyRoom(){navigator.clipboard?.writeText(room);toast('Código copiado: '+room)}
 
-function openShare(){if(role!=='master'){toast('Somente o Mestre pode compartilhar a tela');return}$('shareModal').style.display='flex';$('shareActive').style.display=screenStream?'block':'none'}
+async function loadCameraDevices(){
+  const sel=$('cameraDevice'); const audioSel=$('cameraAudioDevice');
+  if(!sel)return;
+  try{
+    const temp=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+    temp.getTracks().forEach(t=>t.stop());
+  }catch(e){}
+  const devices=await navigator.mediaDevices.enumerateDevices();
+  const cams=devices.filter(d=>d.kind==='videoinput');
+  const audios=devices.filter(d=>d.kind==='audioinput');
+  sel.innerHTML='';
+  cams.forEach((d,i)=>{
+    const o=document.createElement('option');
+    o.value=d.deviceId;o.textContent=d.label||('Câmera '+(i+1));sel.appendChild(o);
+  });
+  if(!cams.length){
+    const o=document.createElement('option');o.textContent='Nenhuma câmera encontrada';o.value='';sel.appendChild(o);
+  }
+  if(audioSel){
+    audioSel.innerHTML='';
+    const none=document.createElement('option');none.value='none';none.textContent='Sem áudio';audioSel.appendChild(none);
+    audios.forEach((d,i)=>{
+      const o=document.createElement('option');
+      o.value=d.deviceId;o.textContent=d.label||('Fonte de áudio '+(i+1));audioSel.appendChild(o);
+    });
+  }
+}
+async function openCamera(){
+  if(role!=='master'){toast('Somente o Mestre pode usar a câmera');return}
+  await loadCameraDevices();
+  $('cameraModal').style.display='flex';
+  $('stopCameraBtn').style.display=cameraStream?'block':'none';
+}
+function closeCamera(){$('cameraModal').style.display='none'}
+async function startCamera(){
+  if(role!=='master')return;
+  try{
+    if(cameraStream)stopCamera();
+    const deviceId=$('cameraDevice')?.value;
+    if(!deviceId){toast('Nenhuma câmera disponível');return}
+    const audioDeviceId=$('cameraAudioDevice')?.value||'none';
+    cameraStream=await navigator.mediaDevices.getUserMedia({
+      video:{deviceId:{exact:deviceId},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30,max:30}},
+      audio:audioDeviceId!=='none'?{deviceId:{exact:audioDeviceId},echoCancellation:false,noiseSuppression:false,autoGainControl:false}:false
+    });
+    renderLocalCamera();
+    const track=cameraStream.getVideoTracks()[0];
+    try{track.contentHint='motion'}catch(e){}
+    track.addEventListener('ended',stopCamera);
+    connections.forEach(c=>{
+      if(!c.open)return;
+      const old=cameraCalls.get(c.peer);if(old){try{old.close()}catch(e){}}
+      const call=peer.call(c.peer,cameraStream,{metadata:{kind:'camera',nick}});
+      cameraCalls.set(c.peer,call);
+    });
+    $('stopCameraBtn').style.display='block';
+    closeCamera();
+    toast('📷 Câmera iniciada');
+  }catch(e){console.error(e);toast(e.name==='NotAllowedError'?'Câmera bloqueada ou cancelada':'Não foi possível abrir a câmera')}
+}
+function renderLocalCamera(){
+  $('cameraTile')?.remove();
+  const t=document.createElement('div');t.className='tile sharing';t.id='cameraTile';
+  const v=document.createElement('video');v.autoplay=true;v.muted=true;v.playsInline=true;v.srcObject=cameraStream;v.className='sharePreview';v.style.display='block';t.appendChild(v);
+  const n=document.createElement('div');n.className='name';n.textContent=nick+' • 📷 câmera';t.appendChild(n);
+  const full=document.createElement('button');full.className='shareFullBtn';full.textContent='⛶ Tela cheia';full.onclick=()=>toggleShareFullscreen(t,full);t.appendChild(full);
+  const stop=document.createElement('button');stop.className='stopShare';stop.textContent='⏹️ Parar câmera';stop.style.position='absolute';stop.style.right='14px';stop.style.bottom='14px';stop.style.width='auto';stop.onclick=stopCamera;t.appendChild(stop);
+  $('stage').appendChild(t);
+}
+function addRemoteCamera(id,name,stream){
+  $('camera-'+CSS.escape(id))?.remove();
+  const t=document.createElement('div');t.className='tile sharing';t.id='camera-'+id;
+  const v=document.createElement('video');v.autoplay=true;v.playsInline=true;v.srcObject=stream;v.className='sharePreview';v.style.display='block';v.volume=1;v.muted=false;t.appendChild(v);
+  const n=document.createElement('div');n.className='name';n.textContent=(name||'Mestre')+' • 📷 câmera + 🔊 áudio';t.appendChild(n);
+  const audioBox=document.createElement('div');audioBox.className='shareAudioControls';
+  const mute=document.createElement('button');mute.type='button';mute.className='shareAudioBtn';mute.textContent='SOM';mute.title='Mutar áudio da câmera';
+  const slider=document.createElement('input');slider.type='range';slider.className='shareVolume';slider.min='0';slider.max='100';slider.value='100';slider.step='1';
+  const value=document.createElement('span');value.className='shareVolumeValue';value.textContent='100%';
+  slider.oninput=()=>{const pct=Number(slider.value)||0;v.volume=pct/100;v.muted=pct===0;value.textContent=pct+'%';mute.textContent=pct===0?'MUT':'SOM'};
+  mute.onclick=()=>{v.muted=!v.muted;mute.textContent=v.muted?'MUT':'SOM'};
+  audioBox.append(mute,slider,value);t.appendChild(audioBox);
+  const full=document.createElement('button');full.className='shareFullBtn';full.textContent='⛶ Tela cheia';full.onclick=()=>toggleShareFullscreen(t,full);t.appendChild(full);
+  $('stage').appendChild(t);remoteCameras.set(id,t);
+}
+function stopCamera(){
+  if(!cameraStream)return;
+  cameraStream.getTracks().forEach(t=>t.stop());
+  cameraCalls.forEach(c=>{try{c.close()}catch(e){}});
+  cameraCalls.clear();cameraStream=null;
+  $('cameraTile')?.remove();$('stopCameraBtn')?.style && ($('stopCameraBtn').style.display='none');
+  connections.forEach(c=>{if(c.open)try{c.send({type:'camera-stop',nick})}catch(e){}});
+  toast('⏹️ Câmera parada');
+}
+function openShare(){
+ if(role!=='master'){toast('Somente o Mestre pode compartilhar a tela');return}
+ const audioSel=$('shareAudioMode');
+ if(audioSel)audioSel.value=shareAudioMode||'auto';
+ $('shareModal').style.display='flex';
+ $('shareActive').style.display=screenStream?'block':'none';
+}
 function closeShare(){$('shareModal').style.display='none'}
 async function shareScreen(type){
-  if(role!=='master') return;
+ try{
+   if(screenStream)stopShare();
+   shareSession++;
+   const currentShareSession=shareSession;
 
-  // getDisplayMedia exige contexto seguro (HTTPS/localhost) na maioria dos navegadores.
-  // Também precisa ser chamado diretamente a partir de uma ação do usuário.
-  if(!navigator.mediaDevices || typeof navigator.mediaDevices.getDisplayMedia!=='function'){
-    toast('⚠️ Compartilhamento de tela indisponível. Abra esta página em HTTPS ou http://localhost.');
-    console.error('getDisplayMedia indisponível:', {
-      protocol: location.protocol,
-      secureContext: window.isSecureContext,
-      mediaDevices: !!navigator.mediaDevices
-    });
-    return;
-  }
+   const cursor=document.getElementById('cursorMode')?.value||'always';
+   const audioMode=document.getElementById('shareAudioMode')?.value||shareAudioMode||'auto';
+   shareAudioMode=audioMode;
+   localStorage.setItem('nevadasShareAudioMode',shareAudioMode);
 
-  if(!window.isSecureContext && location.hostname!=='localhost' && location.hostname!=='127.0.0.1'){
-    toast('🔒 O navegador bloqueou: abra o site em HTTPS ou localhost.');
-    console.warn('Contexto inseguro para getDisplayMedia:', location.href);
-    return;
-  }
+   // O seletor de tela/janela é nativo do navegador/Windows.
+   // O JavaScript não pode editar a lista “Não compartilhar som dos seguintes apps”.
+   // cursor:"never" e systemAudio:"include" são apenas pedidos ao navegador.
+   const videoOptions={
+     frameRate:{ideal:30,max:30},
+     cursor:cursor==='never'?'never':cursor==='motion'?'motion':'always'
+   };
 
-  stopShare();
-  shareSession++;
+   const audioOption =
+     audioMode==='none' ? false :
+     audioMode==='include' ? {} :
+     true;
 
-  const cursor = document.getElementById('cursorMode')?.value || 'always';
-  const audioEnabled = !!document.getElementById('shareAudio')?.checked;
+   const opts={
+     video:videoOptions,
+     audio:audioOption,
+     selfBrowserSurface:'exclude',
+     surfaceSwitching:'include',
+     systemAudio:audioMode==='none'?'exclude':'include',
+     windowAudio:'system',
+     monitorTypeSurfaces:'include'
+   };
 
-  const video = {
-    cursor: cursor==='never' ? 'never' : cursor==='motion' ? 'motion' : 'always',
-    frameRate: { ideal: 30, max: 60 },
-    width: { ideal: 1920 },
-    height: { ideal: 1080 }
-  };
+   try{
+     screenStream=await navigator.mediaDevices.getDisplayMedia(opts);
+   }catch(firstError){
+     // Fallback para navegadores que não aceitam algumas opções avançadas.
+     if(firstError.name==='NotAllowedError')throw firstError;
+     screenStream=await navigator.mediaDevices.getDisplayMedia({
+       video:videoOptions,
+       audio:audioOption
+     });
+   }
 
-  let stream = null;
-  let audioFallback = false;
+   /*
+    * MODO "OCULTAR CURSOR":
+    * Tentamos aplicar cursor=never diretamente na faixa depois da captura.
+    * Se o navegador ignorar a configuração, a chamada NÃO é enviada.
+    * Assim, quando o usuário escolher "Ocultar cursor", o app não transmite
+    * uma captura que o navegador declarou como contendo o cursor.
+    *
+    * Uma página web não consegue apagar um cursor que o Windows já desenhou
+    * dentro dos frames capturados; por isso também verificamos o resultado.
+    */
+   const screenVideoTrack=screenStream.getVideoTracks()[0];
+   if(cursor==='never' && screenVideoTrack){
+     try{
+       await screenVideoTrack.applyConstraints({cursor:'never'});
+     }catch(e){
+       console.warn('Não foi possível aplicar cursor=never:',e);
+     }
 
-  try {
-    // 1) Tenta áudio + vídeo.
-    try {
-      stream = await navigator.mediaDevices.getDisplayMedia({
-        video,
-        audio: audioEnabled
-      });
-    } catch(e){
-      console.warn('Primeira tentativa de compartilhamento falhou:', e);
+     const cursorSetting=screenVideoTrack.getSettings?.().cursor;
 
-      // Cancelamento/bloqueio deliberado não deve abrir uma segunda janela.
-      if(e?.name==='NotAllowedError' || e?.name==='AbortError'){
-        throw e;
-      }
+     if(cursorSetting && cursorSetting!=='never'){
+       try{screenStream.getTracks().forEach(t=>t.stop())}catch(e){}
+       screenStream=null;
+       $('shareActive').style.display='none';
+       $('status').textContent='Pronto';
+       toast('⚠️ O navegador ignorou "Ocultar cursor". A transmissão NÃO foi iniciada.');
+       return;
+     }
+   }
 
-      // 2) Se o navegador rejeitar a captura de áudio, tenta somente vídeo.
-      if(audioEnabled){
-        audioFallback = true;
-        stream = await navigator.mediaDevices.getDisplayMedia({
-          video,
-          audio: false
-        });
-      } else {
-        throw e;
-      }
+   closeShare();
+   renderLocalShare();
+   $('shareActive').style.display='block';
+
+   const hasAudio=screenStream.getAudioTracks().length>0;
+    if(hasAudio){
+      const s=pcAudioState.get('share');
+      if(s){s.muted=false;s.volume=100;}
     }
+   $('status').textContent=hasAudio
+     ?'Transmitindo vídeo + áudio da fonte'
+     :'Transmitindo vídeo (sem áudio da fonte)';
 
-    if(!stream || !stream.getVideoTracks().length){
-      throw new Error('Nenhuma imagem da tela foi capturada.');
-    }
+   const v=screenStream.getVideoTracks()[0];
+   try{if(v)v.contentHint='motion'}catch(e){}
+   if(v)v.addEventListener('ended',stopShare);
 
-    screenStream = stream;
-    closeShare();
-    renderLocalShare();
-    document.getElementById('shareActive')?.classList.remove('hidden');
+   connections.forEach(c=>{
+     if(!c.open)return;
+     const previous=screenCalls.get(c.peer);
+     if(previous){try{previous.close()}catch(e){}}
 
-    const videoTrack = stream.getVideoTracks()[0];
-    const audioTracks = stream.getAudioTracks();
+     const call=peer.call(c.peer,screenStream,{
+       metadata:{
+         kind:'screen',
+         nick,
+         shareSession:currentShareSession,
+         shareId:currentShareSession+'-'+Date.now(),
+         audioCaptured:hasAudio,
+         cursorMode:cursor
+       }
+     });
 
-    try{
-      if('contentHint' in videoTrack) videoTrack.contentHint = 'motion';
-    }catch(_){}
+     screenCalls.set(c.peer,call);
+     applyShareQualityToViewer(c.peer,'auto');
+   });
 
-    // O usuário pode parar pelo botão do próprio navegador.
-    videoTrack.addEventListener('ended', ()=>{
-      if(screenStream === stream) stopShare();
-    }, { once:true });
+   toast(cursor==='never'
+     ?(hasAudio?'Compartilhamento iniciado • cursor oculto • áudio da fonte':'Compartilhamento iniciado • cursor oculto • sem áudio')
+     :(hasAudio?'Compartilhamento iniciado • áudio da fonte':'Compartilhamento iniciado • sem áudio'));
 
-    if(audioTracks.length){
-      try{
-        audioTracks.forEach(t => t.contentHint = 'music');
-      }catch(_){}
-      setStatus('🖥️ Compartilhando tela • áudio ativo');
-    }else if(audioEnabled || audioFallback){
-      setStatus('🖥️ Compartilhando tela • sem áudio (navegador/fonte não disponibilizou)');
-    }else{
-      setStatus('🖥️ Compartilhando tela');
-    }
-
-    // Envia a transmissão para todos os participantes conectados.
-    screenCalls.forEach(call=>{
-      try{ call.close(); }catch(_){}
-    });
-    screenCalls.clear();
-
-    connections.forEach(c=>{
-      if(!c || !c.peer) return;
-      try{
-        const call = peer.call(c.peer, stream, {
-          metadata:{
-            kind:'screen',
-            nick,
-            shareSession,
-            shareId: `${nick}-${shareSession}`
-          }
-        });
-
-        if(call){
-          screenCalls.set(c.peer, call);
-          applyShareQualityToViewer(call);
-
-          call.on('close', ()=>{
-            if(screenCalls.get(c.peer)===call) screenCalls.delete(c.peer);
-          });
-          call.on('error', err=>{
-            console.warn('Erro na transmissão de tela para', c.peer, err);
-          });
-        }
-      }catch(err){
-        console.warn('Não foi possível enviar a tela para', c.peer, err);
-      }
-    });
-
-    toast(audioTracks.length
-      ? '🖥️ Compartilhamento iniciado • 🔊 áudio ativo'
-      : '🖥️ Compartilhamento iniciado • vídeo ativo');
-
-  } catch(e){
-    if(stream){
-      stream.getTracks().forEach(t=>{ try{t.stop();}catch(_){} });
-    }
-    screenStream = null;
-
-    console.error('Screen share:', e);
-
-    let msg = 'Não foi possível compartilhar a tela.';
-    switch(e?.name){
-      case 'NotAllowedError':
-        msg = (!window.isSecureContext && location.hostname!=='localhost' && location.hostname!=='127.0.0.1')
-          ? '🔒 Bloqueado: abra a página em HTTPS ou localhost.'
-          : '🚫 Compartilhamento cancelado ou bloqueado pelo navegador.';
-        break;
-      case 'AbortError':
-        msg = '🚫 Compartilhamento cancelado.';
-        break;
-      case 'NotReadableError':
-        msg = '⚠️ Não foi possível ler a tela/janela escolhida.';
-        break;
-      case 'InvalidStateError':
-        msg = '⚠️ Abra a chamada normalmente e tente novamente.';
-        break;
-      case 'SecurityError':
-        msg = '🔒 O navegador bloqueou por segurança. Use HTTPS ou localhost.';
-        break;
-      case 'TypeError':
-        msg = '⚠️ O navegador não suporta esta captura de tela.';
-        break;
-      default:
-        if(e?.message) msg = `⚠️ ${e.message}`;
-    }
-
-    toast(msg);
-  }
+ }catch(e){
+   console.error(e);
+   toast(e.name==='NotAllowedError'
+     ?'Compartilhamento cancelado no seletor do navegador'
+     :'Não foi possível compartilhar');
+ }
 }
 function renderLocalShare(){
  $('shareTile')?.remove();const t=document.createElement('div');t.className='tile sharing';t.id='shareTile';
@@ -994,6 +1063,8 @@ function stopShare(){
       try{t.stop()}catch(e){}
     });
     screenStream=null;
+    const s=pcAudioState.get('share');
+    if(s){s.muted=true;s.volume=0;}
   }
 
   screenCalls.forEach(c=>{try{c.close()}catch(e){}});
